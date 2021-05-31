@@ -66,6 +66,7 @@ void Hero::update(float delta)
 	case STAND:
 		if ((m_isrunning == true) && (m_isdead == false)&& (m_ishurt == false)) // 跑动结束只执行一次loading动画，避免点击attack动作无法播放
 		{
+			m_isnothurt = false;
 			m_armature->getAnimation()->play("loading");
 			m_isrunning = false;
 		}
@@ -73,6 +74,7 @@ void Hero::update(float delta)
 	case MOVELEFT:
 		if ((this->getPositionX() > 0) && (m_isdead == false)&& (m_ishurt == false) && (m_isAttack == false))
 		{
+			m_isnothurt = false;
 			if (m_isrunning == false)
 			{
 				m_armature->getAnimation()->play("run");
@@ -88,6 +90,7 @@ void Hero::update(float delta)
 	case MOVERIGHT:
 		if ((m_isAttack == false) && (this->getPositionX() < Director::getInstance()->getVisibleSize().width) && (m_isdead == false)&& (m_ishurt == false))
 		{
+			m_isnothurt = false;
 			if (m_isrunning == false) // m_isrunning控制变量防止update时不断执行play("run")则永远显示run动画第一帧
 			{
 				m_armature->getAnimation()->play("run"); 
@@ -104,6 +107,7 @@ void Hero::update(float delta)
 	case ATTACK:
 		if (m_isdead == false&& (m_ishurt == false))
 		{
+			m_isnothurt = false;
 			m_isAttack = true;
 			m_armature->getAnimation()->play("attack");
 		}
@@ -111,6 +115,7 @@ void Hero::update(float delta)
 	case DEATH:
 		if (m_isdead == false)
 		{
+			m_isnothurt = false;
 			m_isdead = true;
 			m_armature->getAnimation()->play("death");
 		}
@@ -118,40 +123,58 @@ void Hero::update(float delta)
 	case SMITTEN:
 		if (m_isdead == false)
 		{
-			if (m_ishurt == true)
+			if (m_ishurt == false&&m_isnothurt==false)
 			{
+				m_ishurt = true;
 				m_armature->getAnimation()->play("smitten");
-				m_ishurt = false;
+				
 			}
 		}
 		break;
+	case DEFEND:
+		if (m_isdead == false) {
+			m_isnothurt = true;
+			m_armature->getAnimation()->play("defend");
+			
+		}
+		break;
 	}
+	
 }
 
 void Hero::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int originFrameIndex, int currentFrameIndex)
 {
 	if (strcmp(evt.c_str(), "attack_end") == 0)
 	{
+		play(DEFEND);
 		m_armature->getAnimation()->play("loading");
 		m_isAttack = false;
+		actionstate = false;
+		play(STAND);
 	}
 	if (strcmp(evt.c_str(), "smitten_end") == 0)
 	{
 		m_armature->getAnimation()->play("loading");
+		actionstate = false;
+		m_ishurt = false;
+		//play(STAND);
+	}
+	if (strcmp(evt.c_str(), "defend_end") == 0)
+	{
+		m_armature->getAnimation()->play("loading");
+		actionstate = false;
+		m_ishurt = false;
+		play(STAND);
 	}
 }
 
 void Hero::play(State state)
 {
-	if (!actionstate) {
+	if (actionstate == false) {
 		m_state = state;
 	}
-	if ((state == SMITTEN || state == ATTACK) && actionstate == false) {
+	if ((state == SMITTEN || state == ATTACK) && actionstate==false) {
 		actionstate = true;
-	}
-	if (state == SMITTEN && actionstate==true) // 控制被击中时颤抖动画只播放一次
-	{
-		m_ishurt = true;  
 	}
 	m_state = state;
 }

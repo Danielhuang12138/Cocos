@@ -120,8 +120,8 @@ void Enemy::update(float delta)
 		{
 			if (m_ishurt == true)
 			{
+				m_ishurt = true;
 				m_armature->getAnimation()->play("smitten");
-				m_ishurt = false;
 			}
 		}
 		break;
@@ -134,20 +134,26 @@ void Enemy::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int ori
 	{
 		m_armature->getAnimation()->play("loading");
 		m_isAttack = false;
+		actionstate = false;
+		play(STAND);
 	}
 	if (strcmp(evt.c_str(), "smitten_end") == 0)
 	{
 		m_armature->getAnimation()->play("loading");
+		actionstate = false;
+		m_ishurt = false;
+		play(STAND);
 	}
 }
 
 void Enemy::play(State state)
 {
-	if (state == SMITTEN)
-	{
-		m_ishurt = true;
+	if (!actionstate) {
+		m_state = state;
 	}
-	m_state = state;
+	if ((state == SMITTEN) && actionstate == false) {
+		actionstate = true;
+	}
 }
 
 //************************************

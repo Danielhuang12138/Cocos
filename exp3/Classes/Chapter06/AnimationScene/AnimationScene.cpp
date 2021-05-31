@@ -243,7 +243,7 @@ void AnimationScene::update(float delta)
 void AnimationScene::attackCallback(Ref* pSender)
 {
 	m_player->play(ATTACK);
-	m_enemy->play(ATTACK);
+	//m_enemy->play(ATTACK);
 }
 
 void AnimationScene::defendCallback(Ref* pSender) {

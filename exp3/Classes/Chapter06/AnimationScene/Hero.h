@@ -47,7 +47,7 @@ private:
 	int m_life;       // 生命值
 
 	int m_max_life;   // 最大生命值
-	bool actionstate;
+	bool actionstate=false;
 };
 
 #endif
