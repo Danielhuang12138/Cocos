@@ -9,6 +9,8 @@
 #include "Enemy.h"
 #include "MyContactListener.h"
 #include "AIManager.h"
+#include "chapter06/Billboard.h"
+#include <stdio.h>
 
 class AnimationScene : public Layer
 {
@@ -18,7 +20,7 @@ public:
 	virtual bool init();
 	CREATE_FUNC(AnimationScene);
 	static Scene* createScene();
-
+	void reboot(float t);
 	void update(float delta);
 
 	void attackCallback(Ref* pSender);

@@ -41,12 +41,13 @@ private:
 	bool m_isrunning;
 	bool m_isdead;
 	bool m_isAttack;  // 是否正在攻击
-
+	bool m_isnothurt;
 	bool m_ishurt;    // 被击状态
 
 	int m_life;       // 生命值
 
 	int m_max_life;   // 最大生命值
+	bool actionstate;
 };
 
 #endif

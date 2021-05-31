@@ -155,6 +155,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Chapter06\AnimationScene\Hero.cpp" />
     <ClCompile Include="..\Classes\Chapter06\AnimationScene\Joystick.cpp" />
     <ClCompile Include="..\Classes\Chapter06\AnimationScene\MyContactListener.cpp" />
+    <ClCompile Include="..\Classes\Chapter06\Billboard.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -167,6 +168,7 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Chapter06\AnimationScene\Hero.h" />
     <ClInclude Include="..\Classes\Chapter06\AnimationScene\Joystick.h" />
     <ClInclude Include="..\Classes\Chapter06\AnimationScene\MyContactListener.h" />
+    <ClInclude Include="..\Classes\Chapter06\Billboard.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>

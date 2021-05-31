@@ -1,5 +1,6 @@
 #include "AnimationScene.h"
 
+
 AnimationScene::AnimationScene()
 {
 	
@@ -9,7 +10,9 @@ AnimationScene::~AnimationScene()
 {
 
 }
-
+auto LabelScore1 = Label::createWithBMFont("../Resources/fonts/futura-48.fnt", "0");
+auto LabelScore2 = Label::createWithBMFont("../Resources/fonts/futura-48.fnt", "0");
+bool dead = 0;
 bool AnimationScene::init()
 {
 	if (!Layer::init())
@@ -34,7 +37,7 @@ bool AnimationScene::init()
 	this->addChild(cloud_2);
 
 	// 背景文字VS
-	auto tips_vs = Label::createWithBMFont("fonts/futura-48.fnt","VS");
+	auto tips_vs = Label::createWithBMFont("fonts/futura-48.fnt","PK");
 	tips_vs->setPosition(Vec2(visibleSize.width/2,visibleSize.height - 80));
 	this->addChild(tips_vs, 5);
 
@@ -72,6 +75,22 @@ bool AnimationScene::init()
 	auto menu1 = Menu::create(defendItem, NULL);
 	menu1->setPosition(Vec2::ZERO);
 	this->addChild(menu1, 5);
+
+	//计分板
+	char str[20] = "";
+	//hero得分
+	_itoa(heroscore, str, 10);
+	LabelScore1 = Label::createWithBMFont("fonts/futura-48.fnt", str);
+	LabelScore1->setPosition(Vec2(visibleSize.width / 2 - 50, visibleSize.height - 150));
+	this->addChild(LabelScore1, 1, 100);
+	auto label1 = Label::createWithBMFont("fonts/futura-48.fnt", ":");
+	label1->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 150));
+	this->addChild(label1, 5);
+	//enemy得分
+	_itoa(enemyscore, str, 10);
+	LabelScore2 = Label::createWithBMFont("fonts/futura-48.fnt", str);
+	LabelScore2->setPosition(Vec2(visibleSize.width / 2 + 50, visibleSize.height - 150));
+	this->addChild(LabelScore2, 1, 101);
 
 	// 地图
 	auto map = TMXTiledMap::create("Chapter06/AnimationScene/animation/background/background.tmx");
@@ -138,6 +157,55 @@ void AnimationScene::update(float delta)
 {
 	// 背景云动画
 	Size visibleSize = Director::getInstance()->getVisibleSize();
+	char str[20];
+	if (dead == 0) {
+		//hero赢
+		if (m_enemy->getLife() <= 0) {
+			heroscore += 5;
+			_itoa(heroscore, str, 10);
+			LabelScore1->setString(str);
+			//round win
+			if (heroscore < 15) {
+				//reboot
+				this->scheduleOnce(schedule_selector(AnimationScene::reboot), 3.0f);
+				auto LabelHerowin = Label::createWithBMFont("fonts/futura-48.fnt", "ROUND WIN");
+				LabelHerowin->setScale(1.0);
+				LabelHerowin->setPosition(Vec2(visibleSize.width / 2 - 360, visibleSize.height - 110));
+				this->addChild(LabelHerowin, 5);
+				dead = 1;
+			}
+			else {
+				//victory
+				auto LabelVictory = Label::createWithBMFont("fonts/futura-48.fnt", "VICTORY");
+				LabelVictory->setScale(1.5);
+				LabelVictory->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 250));
+				this->addChild(LabelVictory, 5);
+				dead = 1;
+			}
+		}
+		else if (m_player->getLife() <= 0) {
+			enemyscore += 3;
+			_itoa(enemyscore, str, 10);
+			LabelScore2->setString(str);
+			if (enemyscore < 15) {
+				//reboot
+				this->scheduleOnce(schedule_selector(AnimationScene::reboot), 3.0f);
+				auto LabelHerolose = Label::createWithBMFont("fonts/futura-48.fnt", "ROUND LOST");
+				LabelHerolose->setScale(1.0);
+				LabelHerolose->setPosition(Vec2(visibleSize.width / 2 + 350, visibleSize.height - 110));
+				this->addChild(LabelHerolose, 5);
+				dead = 1;
+			}
+			else {
+				//lost
+				auto LabelHerolost = Label::createWithBMFont("fonts/futura-48.fnt", "YOU LOSE");
+				LabelHerolost->setScale(1.5);
+				LabelHerolost->setPosition(Vec2(visibleSize.width / 2 + 350, visibleSize.height - 110));
+				this->addChild(LabelHerolost, 5);
+				dead = 1;
+			}
+		}
+	}
 	auto cloud_1 = (Sprite*)getChildByTag(112);
 	auto cloud_2 = (Sprite*)getChildByTag(113);
 	if (cloud_1->getPositionX() > -(3 / 2 *cloud_1->getContentSize().width - visibleSize.width))
@@ -180,4 +248,9 @@ void AnimationScene::attackCallback(Ref* pSender)
 
 void AnimationScene::defendCallback(Ref* pSender) {
 	m_player->play(DEFEND);
+}
+
+void AnimationScene::reboot(float t) {
+	//reboot
+	CCDirector::sharedDirector()->replaceScene(CCTransitionFadeDown::create(1.5f, AnimationScene::createScene()));
 }

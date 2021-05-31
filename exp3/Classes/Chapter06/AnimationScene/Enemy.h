@@ -41,6 +41,7 @@ private:
 	bool m_isrunning; // 是否正在跑动
 	bool m_isdead;    // 是否死亡
 	bool m_isAttack;  // 攻击状态
+	bool actionstate;
 
 	bool m_ishurt;    // 被击状态
 

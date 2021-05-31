@@ -39,6 +39,9 @@
     <ClCompile Include="..\Classes\Chapter06\AnimationScene\MyContactListener.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Chapter06\Billboard.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -69,6 +72,9 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Chapter06\AnimationScene\MyContactListener.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Chapter06\Billboard.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

@@ -143,7 +143,13 @@ void Hero::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int orig
 
 void Hero::play(State state)
 {
-	if (state == SMITTEN) // 控制被击中时颤抖动画只播放一次
+	if (!actionstate) {
+		m_state = state;
+	}
+	if ((state == SMITTEN || state == ATTACK) && actionstate == false) {
+		actionstate = true;
+	}
+	if (state == SMITTEN && actionstate==true) // 控制被击中时颤抖动画只播放一次
 	{
 		m_ishurt = true;  
 	}
