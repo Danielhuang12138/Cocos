@@ -208,14 +208,14 @@ void AnimationScene::update(float delta)
 	}
 	auto cloud_1 = (Sprite*)getChildByTag(112);
 	auto cloud_2 = (Sprite*)getChildByTag(113);
-	if (cloud_1->getPositionX() > -(3 / 2 *cloud_1->getContentSize().width - visibleSize.width))
+	if (cloud_1->getPositionX() > -(cloud_1->getContentSize().width - visibleSize.width))
 	{
 		cloud_1->setPositionX(cloud_1->getPositionX() - 1);
 	} else
 	{
 		cloud_1->setPositionX(visibleSize.width/2);
 	}
-	cloud_2->setPositionX(cloud_1->getPositionX() + cloud_1->getContentSize().width);
+	//cloud_2->setPositionX(cloud_1->getPositionX() + cloud_1->getContentSize().width/2);
 
 	// 更新血条
 	float temp_e = float(m_enemy->getLife()) / m_enemy->getMaxLife();
