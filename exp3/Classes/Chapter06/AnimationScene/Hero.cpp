@@ -15,6 +15,11 @@ Hero::~Hero()
 
 }
 
+time_t currtime;
+time_t ntime;
+time_t trigger = time(&ntime);
+bool tflag = false;
+
 Hero* Hero::create(Vec2 position)
 {
 	Hero *pRet = new(std::nothrow) Hero();
@@ -66,6 +71,7 @@ void Hero::update(float delta)
 	case STAND:
 		if ((m_isrunning == true) && (m_isdead == false)&& (m_ishurt == false)) // 跑动结束只执行一次loading动画，避免点击attack动作无法播放
 		{
+			astate = m_state;
 			m_isnothurt = false;
 			m_armature->getAnimation()->play("loading");
 			m_isrunning = false;
@@ -74,6 +80,7 @@ void Hero::update(float delta)
 	case MOVELEFT:
 		if ((this->getPositionX() > 0) && (m_isdead == false)&& (m_ishurt == false) && (m_isAttack == false))
 		{
+			astate = m_state;
 			m_isnothurt = false;
 			if (m_isrunning == false)
 			{
@@ -90,6 +97,7 @@ void Hero::update(float delta)
 	case MOVERIGHT:
 		if ((m_isAttack == false) && (this->getPositionX() < Director::getInstance()->getVisibleSize().width) && (m_isdead == false)&& (m_ishurt == false))
 		{
+			astate = m_state;
 			m_isnothurt = false;
 			if (m_isrunning == false) // m_isrunning控制变量防止update时不断执行play("run")则永远显示run动画第一帧
 			{
@@ -105,11 +113,14 @@ void Hero::update(float delta)
 		}
 		break;
 	case ATTACK:
-		if (m_isdead == false&& (m_ishurt == false))
+		if (m_isdead == false&& (m_ishurt == false) && astate!=ATTACK)
 		{
+			tflag = true;
+			trigger = time(&ntime);
 			m_isnothurt = false;
 			m_isAttack = true;
 			m_armature->getAnimation()->play("attack");
+			astate = m_state;
 		}
 		break;
 	case DEATH:
@@ -125,17 +136,21 @@ void Hero::update(float delta)
 		{
 			if (m_ishurt == false&&m_isnothurt==false)
 			{
+				trigger = time(&ntime);
 				m_ishurt = true;
 				m_armature->getAnimation()->play("smitten");
-				
+				astate = m_state;
+
 			}
 		}
 		break;
 	case DEFEND:
-		if (m_isdead == false) {
+		if (m_isdead == false && astate!=DEFEND) {
+			trigger = time(&ntime);
+			tflag = true;
 			m_isnothurt = true;
 			m_armature->getAnimation()->play("defend");
-			
+			astate = m_state;
 		}
 		break;
 	}
@@ -144,39 +159,42 @@ void Hero::update(float delta)
 
 void Hero::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int originFrameIndex, int currentFrameIndex)
 {
+	
 	if (strcmp(evt.c_str(), "attack_end") == 0)
 	{
-		play(DEFEND);
 		m_armature->getAnimation()->play("loading");
 		m_isAttack = false;
-		actionstate = false;
 		play(STAND);
 	}
 	if (strcmp(evt.c_str(), "smitten_end") == 0)
 	{
 		m_armature->getAnimation()->play("loading");
-		actionstate = false;
 		m_ishurt = false;
-		//play(STAND);
+		play(STAND);
 	}
 	if (strcmp(evt.c_str(), "defend_end") == 0)
 	{
 		m_armature->getAnimation()->play("loading");
-		actionstate = false;
-		m_ishurt = false;
+		m_isnothurt = false;
 		play(STAND);
 	}
+	
 }
 
 void Hero::play(State state)
 {
-	if (actionstate == false) {
+	currtime = time(&ntime);
+
+	if(tflag==false)
 		m_state = state;
+	if (currtime - trigger > 1 &&tflag==true) {
+		tflag = false;
+		m_isAttack = false;
+		m_ishurt = false;
+		astate = STAND;
+		play(STAND);
 	}
-	if ((state == SMITTEN || state == ATTACK) && actionstate==false) {
-		actionstate = true;
-	}
-	m_state = state;
+
 }
 
 void Hero::hurt()
@@ -201,7 +219,14 @@ void Hero::showBloodTips(int s)
 
 	for (int i = 0; i < hitCount; i ++)
 	{
-		int hurt_blood = s + rand()%8;
+		int hurt_blood = 0;
+		if (m_isnothurt == true) {
+			hurt_blood = s + rand() % 8 - 20;
+		}
+		else {
+			hurt_blood = s + rand() % 8;
+		}
+		
 		setLife(m_life - hurt_blood); // 扣血
 		auto label = Label::createWithBMFont("fonts/futura-48.fnt", StringUtils::format("-%d",hurt_blood));
 		label->setColor(Color3B::RED);

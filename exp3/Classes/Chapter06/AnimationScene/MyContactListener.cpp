@@ -75,6 +75,7 @@ void MyContactListener::update(float delta)
 	if (!m_hero->isDeath() && m_enemy->isAttack() &&(hero_rec.containsPoint(enemy_p_1) || hero_rec.containsPoint(enemy_p_2)))
 	{
 		// CCLOG("attack...hero....");
+		
 		m_hero->hurt();
 		m_enemy->setAttack(false);
 	}

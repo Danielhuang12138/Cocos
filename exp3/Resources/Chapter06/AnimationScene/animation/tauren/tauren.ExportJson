@@ -1003,8 +1003,8 @@
         },
         {
           "name": "run",
-          "dr": 12,
-          "lp": false,
+          "dr": 13,
+          "lp": true,
           "to": 0,
           "drTW": 0,
           "twE": 0,
@@ -2178,7 +2178,7 @@
         },
         {
           "name": "attack",
-          "dr": 19,
+          "dr": 20,
           "lp": true,
           "to": 0,
           "drTW": 0,
@@ -3776,7 +3776,7 @@
         },
         {
           "name": "smitten",
-          "dr": 8,
+          "dr": 9,
           "lp": true,
           "to": 0,
           "drTW": 0,
@@ -4484,7 +4484,7 @@
         },
         {
           "name": "death",
-          "dr": 32,
+          "dr": 33,
           "lp": false,
           "to": 0,
           "drTW": 0,

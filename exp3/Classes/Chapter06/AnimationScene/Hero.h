@@ -2,6 +2,7 @@
 #define __HERO_H__
 
 #include "config_set.h"
+#include"time.h"
 
 class Hero : public Sprite
 {
@@ -43,7 +44,7 @@ private:
 	bool m_isAttack;  // 是否正在攻击
 	bool m_isnothurt;
 	bool m_ishurt;    // 被击状态
-
+	float astate;
 	int m_life;       // 生命值
 
 	int m_max_life;   // 最大生命值

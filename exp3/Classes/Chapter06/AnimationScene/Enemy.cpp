@@ -14,6 +14,10 @@ Enemy::~Enemy()
 {
 
 }
+time_t ecurrtime;
+time_t entime;
+time_t etrigger = time(&entime);
+bool etflag = false;
 
 Enemy* Enemy::create(Vec2 position)
 {
@@ -66,6 +70,7 @@ void Enemy::update(float delta)
 	case STAND:
 		if ((m_isAttack == false) && (m_isrunning == true) && (m_isdead == false) && (m_ishurt == false)) // 跑动结束只执行一次loading动画，避免点击attack动作无法播放
 		{
+			astate = m_state;
 			m_armature->getAnimation()->play("loading");
 			m_isrunning = false;
 		}
@@ -73,10 +78,12 @@ void Enemy::update(float delta)
 	case MOVELEFT:
 		if ((m_isAttack == false) && (this->getPositionX() > 0) && (m_isdead == false) && (m_ishurt == false))
 		{
+			astate = m_state;
 			if (m_isrunning == false)
 			{
-				m_armature->getAnimation()->play("run");
 				m_isrunning = true;
+				m_armature->getAnimation()->play("run");
+				
 			}
 			if (m_armature->getScaleX() != 1)
 			{
@@ -88,10 +95,12 @@ void Enemy::update(float delta)
 	case MOVERIGHT:
 		if ((m_isAttack == false) && (this->getPositionX() < Director::getInstance()->getVisibleSize().width) && (m_isdead == false) && (m_ishurt == false))
 		{
+			astate = m_state;
 			if (m_isrunning == false) // m_isrunning控制变量防止update时不断执行play("run")则永远显示run动画第一帧
 			{
-				m_armature->getAnimation()->play("run"); 
 				m_isrunning = true;
+				m_armature->getAnimation()->play("run"); 
+				
 			}
 
 			if (m_armature->getScaleX() != -1.0)
@@ -104,8 +113,11 @@ void Enemy::update(float delta)
 	case ATTACK:
 		if (m_isdead == false && (m_ishurt == false))
 		{
+			//etflag = true;
+			//etrigger = time(&entime);
 			m_isAttack = true;
 			m_armature->getAnimation()->play("attack");
+			astate = m_state;
 		}
 		break;
 	case DEATH:
@@ -120,8 +132,11 @@ void Enemy::update(float delta)
 		{
 			if (m_ishurt == true)
 			{
+				etflag = true;
+				etrigger = time(&entime);
 				m_ishurt = true;
 				m_armature->getAnimation()->play("smitten");
+				astate = m_state;
 			}
 		}
 		break;
@@ -134,13 +149,11 @@ void Enemy::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int ori
 	{
 		m_armature->getAnimation()->play("loading");
 		m_isAttack = false;
-		actionstate = false;
 		play(STAND);
 	}
 	if (strcmp(evt.c_str(), "smitten_end") == 0)
 	{
 		m_armature->getAnimation()->play("loading");
-		actionstate = false;
 		m_ishurt = false;
 		play(STAND);
 	}
@@ -148,11 +161,16 @@ void Enemy::onFrameEvent(cocostudio::Bone *bone, const std::string& evt, int ori
 
 void Enemy::play(State state)
 {
-	if (!actionstate) {
+	ecurrtime = time(&entime);
+	if (!etflag) {
 		m_state = state;
 	}
-	if ((state == SMITTEN) && actionstate == false) {
-		actionstate = true;
+	if (ecurrtime-etrigger>1&&etflag==true) {
+		etflag = false;
+		m_isAttack = false;
+		m_ishurt = false;
+		astate = STAND;
+		play(STAND);
 	}
 }
 
