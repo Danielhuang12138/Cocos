@@ -33,7 +33,8 @@ public:
 	void setLife(int life) { m_life = life; }
 
 	bool isDeath() { return m_isdead; }
-
+	bool getAHflag() { return AHflag; }
+	void setAHflag(bool flag) { AHflag = flag; }
 	int getMaxLife() { return m_max_life; }
 
 private:
@@ -43,6 +44,7 @@ private:
 	bool m_isdead;    // 是否死亡
 	bool m_isAttack;  // 攻击状态
 	float astate;
+	bool AHflag;
 	bool m_ishurt;    // 被击状态
 
 	int m_life;       // 生命值

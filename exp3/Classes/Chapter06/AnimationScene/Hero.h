@@ -35,6 +35,8 @@ public:
 	bool isDeath() { return m_isdead; }
 
 	int getMaxLife() { return m_max_life; }
+	bool getAHflag() { return AHflag; }
+	void setAHflag(bool flag) { AHflag = flag; }
 
 private:
 	Armature* m_armature;
@@ -45,6 +47,7 @@ private:
 	bool m_isnothurt;
 	bool m_ishurt;    // 被击状态
 	float astate;
+	bool AHflag;
 	int m_life;       // 生命值
 
 	int m_max_life;   // 最大生命值

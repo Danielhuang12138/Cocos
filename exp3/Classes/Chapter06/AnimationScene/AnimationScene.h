@@ -22,7 +22,7 @@ public:
 	static Scene* createScene();
 	void reboot(float t);
 	void update(float delta);
-
+	void pkres();
 	void attackCallback(Ref* pSender);
 	void defendCallback(Ref* pSender);
 	
@@ -30,7 +30,7 @@ private:
 	Joystick* m_joystick;   // 摇杆
 	MyContactListener* m_contactListener;  // 碰撞检测
 	AIManager* m_aimanager;  // AI manager
-
+	bool dead=false;
 	Hero* m_player;
 	Enemy* m_enemy;
 

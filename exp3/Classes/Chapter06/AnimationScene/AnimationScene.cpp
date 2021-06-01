@@ -12,7 +12,6 @@ AnimationScene::~AnimationScene()
 }
 auto LabelScore1 = Label::createWithBMFont("../Resources/fonts/futura-48.fnt", "0");
 auto LabelScore2 = Label::createWithBMFont("../Resources/fonts/futura-48.fnt", "0");
-bool dead = 0;
 bool AnimationScene::init()
 {
 	if (!Layer::init())
@@ -142,20 +141,11 @@ bool AnimationScene::init()
 	// update
 	this->scheduleUpdate();
 
+
 	return true;
 }
 
-Scene* AnimationScene::createScene()
-{
-	auto scene = Scene::create();
-	auto layer = AnimationScene::create();
-	scene->addChild(layer);
-	return scene;
-}
-
-void AnimationScene::update(float delta)
-{
-	// 背景云动画
+void AnimationScene::pkres() {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	char str[20];
 	if (dead == 0) {
@@ -178,7 +168,7 @@ void AnimationScene::update(float delta)
 				//victory
 				auto LabelVictory = Label::createWithBMFont("fonts/futura-48.fnt", "VICTORY");
 				LabelVictory->setScale(1.5);
-				LabelVictory->setPosition(Vec2(visibleSize.width / 2, visibleSize.height - 250));
+				LabelVictory->setPosition(Vec2(visibleSize.width / 2, visibleSize.height/2));
 				this->addChild(LabelVictory, 5);
 				dead = 1;
 			}
@@ -200,14 +190,28 @@ void AnimationScene::update(float delta)
 				//lost
 				auto LabelHerolost = Label::createWithBMFont("fonts/futura-48.fnt", "YOU LOSE");
 				LabelHerolost->setScale(1.5);
-				LabelHerolost->setPosition(Vec2(visibleSize.width / 2 + 350, visibleSize.height - 110));
+				LabelHerolost->setPosition(Vec2(visibleSize.width / 2, visibleSize.height /2));
 				this->addChild(LabelHerolost, 5);
 				dead = 1;
 			}
 		}
 	}
+}
+Scene* AnimationScene::createScene()
+{
+	auto scene = Scene::create();
+	auto layer = AnimationScene::create();
+	scene->addChild(layer);
+	return scene;
+}
+
+void AnimationScene::update(float delta)
+{
+	// 背景云动画
+	pkres();
+	Size visibleSize = Director::getInstance()->getVisibleSize();
 	auto cloud_1 = (Sprite*)getChildByTag(112);
-	auto cloud_2 = (Sprite*)getChildByTag(113);
+	auto cloud_2 = (Sprite*)getChildByTag(113); 
 	if (cloud_1->getPositionX() > -(cloud_1->getContentSize().width - visibleSize.width))
 	{
 		cloud_1->setPositionX(cloud_1->getPositionX() - 1);
@@ -253,4 +257,6 @@ void AnimationScene::defendCallback(Ref* pSender) {
 void AnimationScene::reboot(float t) {
 	//reboot
 	CCDirector::sharedDirector()->replaceScene(CCTransitionFadeDown::create(1.5f, AnimationScene::createScene()));
+	//dead = 0;
 }
+

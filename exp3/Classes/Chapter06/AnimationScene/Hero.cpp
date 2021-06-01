@@ -115,6 +115,7 @@ void Hero::update(float delta)
 	case ATTACK:
 		if (m_isdead == false&& (m_ishurt == false) && astate!=ATTACK)
 		{
+			AHflag = true;
 			tflag = true;
 			trigger = time(&ntime);
 			m_isnothurt = false;
@@ -224,7 +225,7 @@ void Hero::showBloodTips(int s)
 			hurt_blood = s + rand() % 8 - 20;
 		}
 		else {
-			hurt_blood = s + rand() % 8;
+			hurt_blood = s + rand() % 8 - 10;
 		}
 		
 		setLife(m_life - hurt_blood); // 扣血

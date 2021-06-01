@@ -115,6 +115,7 @@ void Enemy::update(float delta)
 		{
 			//etflag = true;
 			//etrigger = time(&entime);
+			AHflag = true;
 			m_isAttack = true;
 			m_armature->getAnimation()->play("attack");
 			astate = m_state;

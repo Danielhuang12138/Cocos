@@ -59,24 +59,30 @@ void MyContactListener::update(float delta)
 	Vec2 hero_p_2 = m_hero->getArmature()->getBone("Layer17")->getDisplayRenderNode()->convertToWorldSpaceAR(Vec2(0,15));
 	Vec2 hero_p_3 = m_hero->getArmature()->getBone("Layer17")->getDisplayRenderNode()->convertToWorldSpaceAR(Vec2(0,30));
 	Vec2 hero_p_4 = m_hero->getArmature()->getBone("Layer17")->getDisplayRenderNode()->convertToWorldSpaceAR(Vec2(0,50));
-	Rect enemy_rec = Rect(m_enemy->getPositionX(),m_enemy->getPositionY() - 40, 20, 40);
-	if (!m_enemy->isDeath() && m_hero->isAttack() && (enemy_rec.containsPoint(hero_p_1) || enemy_rec.containsPoint(hero_p_2) 
+	Rect enemy_rec = Rect(m_enemy->getPositionX()-85,m_enemy->getPositionY() - 70, 170, 200);
+	if (!m_enemy->isDeath() && m_hero->isAttack()
+		//&&m_hero->getAHflag() 
+		&& (enemy_rec.containsPoint(hero_p_1) || enemy_rec.containsPoint(hero_p_2) 
 		|| enemy_rec.containsPoint(hero_p_3) || enemy_rec.containsPoint(hero_p_4)))
 	{
 		// CCLOG("attack....enemy....");
 		m_enemy->hurt();
+		//m_hero->setAHflag(false);
 		m_hero->setAttack(false);
 	}
 	
 	// enemy 攻击 hero
 	Vec2 enemy_p_1 = m_enemy->getArmature()->getBone("ax")->getDisplayRenderNode()->convertToWorldSpaceAR(Vec2(0,0));
 	Vec2 enemy_p_2 = m_enemy->getArmature()->getBone("ax")->getDisplayRenderNode()->convertToWorldSpaceAR(Vec2(0,30));
-	Rect hero_rec = Rect(m_hero->getPositionX() - 10,m_hero->getPositionY() - 20,20,40);
-	if (!m_hero->isDeath() && m_enemy->isAttack() &&(hero_rec.containsPoint(enemy_p_1) || hero_rec.containsPoint(enemy_p_2)))
+	Rect hero_rec = Rect(m_hero->getPositionX() - 85,m_hero->getPositionY() - 70,170,200);
+	if (!m_hero->isDeath() && m_enemy->isAttack()&&
+		//m_enemy->getAHflag() &&
+		(hero_rec.containsPoint(enemy_p_1) || hero_rec.containsPoint(enemy_p_2)))
 	{
 		// CCLOG("attack...hero....");
 		
 		m_hero->hurt();
+		//m_enemy->setAHflag(false);
 		m_enemy->setAttack(false);
 	}
 }
