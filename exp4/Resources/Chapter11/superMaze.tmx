@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="32" tileheight="32" nextobjectid="1">
- <tileset firstgid="1" name="ak's_assets_0" tilewidth="32" tileheight="32" tilecount="504">
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="32" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" name="ak's_assets_0" tilewidth="32" tileheight="32" tilecount="504" columns="24">
   <image source="ak's_assets_0.png" width="768" height="672"/>
  </tileset>
- <layer name="mainLayer" width="32" height="20">
+ <layer id="1" name="mainLayer" width="32" height="20">
   <data encoding="base64" compression="zlib">
-   eJy9k1EKACEIRD1i9z/NfiwLMfhsTFghzNTGsYx4ZcVMKL+6d23+VSzyB2jy7+cZvlM/2aSzONpT/W4c+Ylnla91d+1TP2/qv/0XDn/ic5JJPxyOnT6o7sxXV1yeE/4Uo/e686J1VPyd/0v3nuKqvfte7j93+btzq3aHt1uvy3eid6yMB8kEL8N03tudD8LP8hRf+U1tp6/T9+3mU+8qHmSrdOcnq+nP9eE/ESdmMQ==
+   eJy9k2EKwCAIhT1iB+n+vzfYBiF+85ljD8JMS5+m2YVxrmn7GMXzedvG4keL7AaS7Ou5gV+WP+kkIz/aU/6qH9mJ59t9n3dVz+q5k//uv1D4E58MnXooHCt18LIyX1WoPOl8nf+v+5vVxZxvBOX/0ruZ39te7Zf6z1X+6tx6vcJbzVfl25FrrIgHoRMviqn0W50Pih/d8/E9v66u1LXb3+p9qt20Ok+P6vxEOf25nvgHCcxn4Q==
   </data>
  </layer>
 </map>

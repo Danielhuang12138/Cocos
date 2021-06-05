@@ -181,7 +181,7 @@ int MazeScene::aStar(mapNode** map, mapNode* origin, mapNode* destination)
 void MazeScene::moveOnPath(mapNode* tempNode)
 {
 	//声明存储路径坐标的结构体
-	struct pathCoordinate{ int x; int y; };
+	struct pathCoordinate { int x; int y; int type; };
 	//分配路径坐标结构体数组
 	pathCoordinate* path = new pathCoordinate[MAP_WIDTH*MAP_HEIGHT];
 	//利用父节点信息逆序存储路径坐标
@@ -197,6 +197,8 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 	auto smile = this->getChildByTag(SMILE_TAG);
 	int fromX = smile->getPositionX();
 	int fromY = smile->getPositionY();
+	//危险区域检测
+	int type = BLOCK;
 	//声明动作向量存储动作序列
 	Vector<FiniteTimeAction*> actionVector;
 	//从结构体数组尾部开始扫描
@@ -207,17 +209,42 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 		int realY = m_visibleSize.height - (path[j].y + 0.5)*UNIT;
 		//创建移动动作并存入动作向量
 		auto moveAction = MoveTo::create(0.2, Vec2(realX, realY));
-		actionVector.pushBack(moveAction);
+		if (aflag) {
+			actionVector.pushBack(moveAction);
+		}
+		if (path[j].type == DEATH || path[j].type == DOWN || path[j].type == UP) {
+			if (aflag) {
+				type = path[j].type;
+			}
+			if (path[j].type == DOWN) {
+				if (floors == 1) {
+					stx = path[j].x - 1;
+				}
+				else {
+					stx = path[j].x;
+				}
+				sty = path[j].y;
+			}
+			else if (path[j].type == UP) {
+				stx = path[j].x + 1;
+				sty = path[j].y;
+			}
+			aflag = false;
+		}
 		//绘制从起点到下一个地图单元的线段
 		m_draw->drawLine(Vec2(fromX, fromY), Vec2(realX, realY), Color4F(1.0, 1.0, 1.0, 1.0));
 		//将当前坐标保存为下一次绘制的起点
 		fromX = realX;
 		fromY = realY;
 	}
+	if (type == DEATH) {
+		auto caution = this->getChildByTag(D_TAG);
+		caution->setVisible(true);
+	}
 	//创建动作序列
 	auto actionSequence = Sequence::create(actionVector);
 	//笑脸精灵执行移动动作序列
-	smile->runAction(actionSequence);
+	smile->runAction(Sequence::create(actionSequence,CallFunc::create(CC_CALLBACK_0(MazeScene::judge,this,type)),NULL));
 }
 
 void MazeScene::addTouchListener()
@@ -284,4 +311,17 @@ void MazeScene::onTouchEnded(Touch *touch, Event *unused_event)
 	//隐藏寻路成功提示
 	auto tip = this->getChildByTag(TIP_TAG);
 	tip->setVisible(false);
+}
+
+void MazeScene::judge(int type) {
+	auto caution = this->getChildByTag(D_TAG);
+	auto death = this->getChildByTag(DE_TAG);
+	auto smile = this->getChildByTag(SMILE_TAG);
+	auto box = this->getChildByTag(BOX_TAG);
+	auto tip = this->getChildByTag(TIP_TAG);
+	if (aflag == false) {
+		if (type == DEATH) {
+
+		}
+	}
 }

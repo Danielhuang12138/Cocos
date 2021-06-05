@@ -9,6 +9,12 @@ USING_NS_CC;
 #define FORBID_TAG 3
 #define BOX_TAG 4
 #define TIP_TAG 5
+#define BLOCK 6
+#define DEATH 7
+#define DOWN 8
+#define UP 9
+#define D_TAG 10
+#define DE_TAG 11
 #define NOT_ACCESS_TILE 80
 
 class MazeScene : public cocos2d::Layer
@@ -28,6 +34,9 @@ private:
 	mapNode* m_destination;
 	//判断是否可以在地图上移动
 	bool m_isReadyToMove; 
+	bool aflag;
+	int floors;
+	int stx, sty;
 public:
 	static cocos2d::Scene* createScene();
 	virtual bool init();
@@ -42,7 +51,7 @@ public:
 	void addTouchListener();
 	//定时器更新
 	void update(float delta);
-
+	void judge(int type);
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchEnded(Touch *touch, Event *unused_event);
 };

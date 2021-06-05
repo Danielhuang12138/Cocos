@@ -4,6 +4,7 @@
 
 
 USING_NS_CC;
+static cocos2d::Size designResolutionSize = cocos2d::Size(1024, 768);
 
 AppDelegate::AppDelegate() {
 
@@ -29,7 +30,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::create("迷宫 黄家豪 2018152053");
+        glview = GLViewImpl::createWithRect("迷宫 黄家豪 2018152053",cocos2d::Rect(0,0,designResolutionSize.width,designResolutionSize.height));
         director->setOpenGLView(glview);
     }
 
