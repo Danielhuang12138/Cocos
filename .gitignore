@@ -13,3 +13,9 @@ CopyOnly/cocos2d/cocos/editor-support/spine/proj.win32/Debug.win32/
 exp3/cocos2d/external/bullet/proj.win32/Debug.win32/
 HelloWorld/cocos2d/external/bullet/proj.win32/Debug.win32/
 CopyOnly/cocos2d/external/bullet/proj.win32/Debug.win32/
+
+exp4/proj.win32/Debug.win32/
+exp4/cocos2d/cocos/2d/Debug.win32/
+exp4/proj.win32/.vs/
+exp4/cocos2d/cocos/editor-support/spine/proj.win32/Debug.win32/
+exp4/cocos2d/external/bullet/proj.win32/Debug.win32/
