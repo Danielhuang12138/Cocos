@@ -321,7 +321,72 @@ void MazeScene::judge(int type) {
 	auto tip = this->getChildByTag(TIP_TAG);
 	if (aflag == false) {
 		if (type == DEATH) {
-
+			this->unscheduleUpdate();
+			tip->setVisible(false);
+			caution->setVisible(false);
+			death->setVisible(true);
+			if (smile->getPosition() == box->getPosition()) {
+				box->setVisible(false);
+			}
+			smile->setVisible(false);
+			auto shocked = Sprite::create("Chapter11/shocked.png");
+			shocked->setPosition(smile->getPosition());
+			this->addChild(shocked, 4);
+			_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
 		}
+		else if (type == DOWN) {
+			if (floors == 1) {
+				floors++;
+				map = "Chapter11/superMaze2.tmx";
+				MazeScene::reboot(0.0);
+			}
+			else if (floors == 2) {
+				floors++;
+				map = "randMap";
+				MazeScene::reboot(0.0);
+			}
+			else if (floors == 10) {
+				auto win = Label::createWithBMFont("fonts/futura-48.fnt", "win");
+				win->setPosition(m_visibleSize.width / 2, m_visibleSize.height / 2);
+				win->setScale(1.5);
+				this->addChild(win, 2);
+				_eventDispatcher->removeEventListenersForType(EventListener::Type::TOUCH_ONE_BY_ONE);
+			}
+			else {
+				floors++;
+				MazeScene::reboot(0.0);
+			}
+		}
+		else if (type == UP) {
+			floors--;
+			map = "Chapter11/superMaze.tmx";
+			MazeScene::reboot(0.0);
+		}
+	}
+}
+
+void MazeScene::addKeyboardListerner() {
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = CC_CALLBACK_2(MazeScene::onKeyPressed, this);
+	listener->onKeyReleased = CC_CALLBACK_2(MazeScene::onKeyReleased, this);
+	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(listener, this);
+}
+
+void MazeScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
+	if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_Z) {
+		stx = 0;
+		sty = 0;
+		floors = 1;
+		map = "Chapter11/superMaze.tmx";
+		MazeScene::reboot(0.0);
+	}
+}
+
+void MazeScene::reboot(float t) {
+	if (rand() % 2) {
+		CCDirector::sharedDirector()->replaceScene(CCTransitionCrossFade::create(1.2f, MazeScene::createScene()));
+	}
+	else {
+		CCDirector::sharedDirector()->replaceScene(CCTransitionCrossFade::create(1.2f, MazeScene::createScene()));
 	}
 }

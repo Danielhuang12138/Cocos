@@ -37,6 +37,7 @@ private:
 	bool aflag;
 	int floors;
 	int stx, sty;
+	string map;
 public:
 	static cocos2d::Scene* createScene();
 	virtual bool init();
@@ -54,6 +55,9 @@ public:
 	void judge(int type);
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 	void onTouchEnded(Touch *touch, Event *unused_event);
+	void addKeyboardListerner();
+	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+	void reboot(float t);
 };
 #endif
 
