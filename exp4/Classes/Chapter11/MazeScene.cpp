@@ -20,6 +20,7 @@ Scene* MazeScene::createScene()
 // on "init" you need to initialize your instance
 bool MazeScene::init()
 {
+	aflag = true;
 	if (!Layer::init())
 	{
 		return false;
@@ -68,6 +69,16 @@ bool MazeScene::init()
 	forbidSprite->setPosition(m_visibleSize.width / 2 , m_visibleSize.height / 2 );
 	forbidSprite->setVisible(false);
 	this->addChild(forbidSprite, 4, FORBID_TAG);
+	//预置死亡提示tag
+	auto caution = Sprite::create("Chapter11/forbid.png");
+	caution->setPosition(m_visibleSize.width / 2, m_visibleSize.height / 2);
+	caution->setVisible(false);
+	this->addChild(caution, 4, D_TAG);
+	//预置死亡tag
+	auto deathtag = Sprite::create("Chapter11/forbid.png");
+	deathtag->setPosition(m_visibleSize.width / 2, m_visibleSize.height / 2);
+	deathtag->setVisible(false);
+	this->addChild(deathtag, 4, DE_TAG);
 	//添加绘图节点
 	m_draw = DrawNode::create();
 	this->addChild(m_draw, 2, DRAW_TAG);
@@ -95,7 +106,7 @@ void MazeScene::update(float delta)
 			{
 				if (m_map[i][j].status != NOT_ACCESS)
 				{
-					mapNode temp = { ACCESS, i, j, 0, 0, 0, nullptr };
+					mapNode temp = { ACCESS, i, j, 0, 0, 0,ROAD, nullptr };
 					m_map[i][j] = temp;
 				}			
 			}
@@ -127,14 +138,14 @@ void MazeScene::initMap()
 			//若当前位置为墙体瓦片设置为不可通过
 			if (m_mapLayer->getTileGIDAt(Vec2(i, j)) == NOT_ACCESS_TILE)
 			{
-				mapNode temp={NOT_ACCESS, i, j, 0, 0, 0, nullptr };
+				mapNode temp={NOT_ACCESS, i, j, 0, 0, 0,WALL, nullptr };
 				m_map[i][j] = temp;
 			}
 				
 			//否则设置为可以通过
 			else
 			{
-				mapNode temp={ ACCESS, i, j, 0, 0, 0, nullptr };
+				mapNode temp={ ACCESS, i, j, 0, 0, 0,ROAD, nullptr };
 				m_map[i][j] = temp;
 			}
 		}
@@ -190,6 +201,7 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 	{
 		path[loopNum].x = tempNode->xCoordinate;
 		path[loopNum].y = tempNode->yCoordinate;
+		path[loopNum].type = tempNode->type;
 		loopNum++;
 		tempNode = tempNode->parent;
 	}
@@ -198,7 +210,7 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 	int fromX = smile->getPositionX();
 	int fromY = smile->getPositionY();
 	//危险区域检测
-	int type = BLOCK;
+	int type = ROAD;
 	//声明动作向量存储动作序列
 	Vector<FiniteTimeAction*> actionVector;
 	//从结构体数组尾部开始扫描
@@ -242,9 +254,15 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 		caution->setVisible(true);
 	}
 	//创建动作序列
+	//judge(type);
 	auto actionSequence = Sequence::create(actionVector);
 	//笑脸精灵执行移动动作序列
-	smile->runAction(Sequence::create(actionSequence,CallFunc::create(CC_CALLBACK_0(MazeScene::judge,this,type)),NULL));
+	auto seq = Sequence::create(CallFunc::create(CC_CALLBACK_0(MazeScene::judge, this, type)),NULL);
+	smile->runAction(actionSequence);
+	smile->runAction(seq);
+	//auto seqa = Sequence::create(actionSequence, seq);
+	//smile->runAction(seqa);
+		//CallFunc::create(CC_CALLBACK_0(MazeScene::judge,this,type)),NULL));
 }
 
 void MazeScene::addTouchListener()
@@ -373,7 +391,7 @@ void MazeScene::addKeyboardListerner() {
 }
 
 void MazeScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
-	if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_Z) {
+	if (keyCode == cocos2d::EventKeyboard::KeyCode::KEY_R) {
 		stx = 0;
 		sty = 0;
 		floors = 1;

@@ -17,6 +17,8 @@ using namespace std;
 #define DESTINATION 4	   
 #define IN_OPENLIST 5    //节点在OPEN表、CLOSED表中
 #define IN_CLOSEDLIST 6  
+#define WALL 777
+#define ROAD 888
 
 //定义节点结构：
 struct mapNode
@@ -27,6 +29,7 @@ struct mapNode
 	int fValue;		   //节点的f值，g值，h值
 	int gValue;
 	int hValue;
+	int type;
 	mapNode* parent;    //节点的父节点指针
 };
 
