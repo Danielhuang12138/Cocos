@@ -57,6 +57,7 @@ public:
 	void onTouchEnded(Touch *touch, Event *unused_event);
 	void addKeyboardListerner();
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event*event);
 	void reboot(float t);
 };
 #endif

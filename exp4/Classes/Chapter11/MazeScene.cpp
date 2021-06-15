@@ -86,6 +86,7 @@ bool MazeScene::init()
 	addTouchListener();
 	//调用定时器更新
 	this->scheduleUpdate();
+	addKeyboardListerner();
 	return true;
 }
 
@@ -259,7 +260,7 @@ void MazeScene::moveOnPath(mapNode* tempNode)
 	//笑脸精灵执行移动动作序列
 	auto seq = Sequence::create(CallFunc::create(CC_CALLBACK_0(MazeScene::judge, this, type)),NULL);
 	smile->runAction(actionSequence);
-	smile->runAction(seq);
+	//smile->runAction(seq);
 	//auto seqa = Sequence::create(actionSequence, seq);
 	//smile->runAction(seqa);
 		//CallFunc::create(CC_CALLBACK_0(MazeScene::judge,this,type)),NULL));
@@ -399,7 +400,9 @@ void MazeScene::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event) {
 		MazeScene::reboot(0.0);
 	}
 }
-
+void MazeScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event*event) {
+	log("key %d released", keyCode);
+}
 void MazeScene::reboot(float t) {
 	if (rand() % 2) {
 		CCDirector::sharedDirector()->replaceScene(CCTransitionCrossFade::create(1.2f, MazeScene::createScene()));
