@@ -21,3 +21,11 @@ exp4/cocos2d/cocos/editor-support/spine/proj.win32/Debug.win32/
 exp4/cocos2d/external/bullet/proj.win32/Debug.win32/
 exp4/cocos2d/external/Box2D/proj.win32/Debug.win32/
 exp4/cocos2d/external/recast/proj.win32/Debug.win32/
+
+final/proj.win32/Debug.win32/
+final/cocos2d/cocos/2d/Debug.win32/
+final/proj.win32/.vs/
+final/cocos2d/cocos/editor-support/spine/proj.win32/Debug.win32/
+final/cocos2d/external/bullet/proj.win32/Debug.win32/
+final/cocos2d/external/Box2D/proj.win32/Debug.win32/
+final/cocos2d/external/recast/proj.win32/Debug.win32/
