@@ -1,13 +1,4 @@
 #include "AppDelegate.h"
-#include "Chapter05/MapScene.h"
-#include "Chapter06/AnimationEditor/AnimationEditorScene.h"
-#include "Chapter06/AnimationScene/AnimationScene.h"
-#include "Chapter07/PhysicsScene.h"
-#include "Chapter07/PhysicsBox2dScene.h"
-#include "Chapter08/ParticleScene.h"
-#include "Chapter09/AudioScene.h"
-#include "Chapter10/HelloWorldScene.h"
-#include "Chapter11/MazeScene.h"
 #include "Chapter12/GameClient.h"
 
 
@@ -38,7 +29,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::create("My Game");
+        glview = GLViewImpl::create("坦克战 黄家豪 2018152053");
         director->setOpenGLView(glview);
     }
 

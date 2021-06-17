@@ -148,11 +148,38 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\BaseObject.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Brick.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Bullet.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\GameClient.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Msg\FireMsg.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Msg\Msg.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Msg\TankMoveMsg.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Msg\TankNewMsg.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\NetClient.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\ODSocket\ODSocket.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\ODSocket\stdafx.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\Tank.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
+    <ClInclude Include="..\Classes\Chapter12\BaseObject.h" />
+    <ClInclude Include="..\Classes\Chapter12\Brick.h" />
+    <ClInclude Include="..\Classes\Chapter12\Bullet.h" />
+    <ClInclude Include="..\Classes\Chapter12\GameClient.h" />
+    <ClInclude Include="..\Classes\Chapter12\Global.h" />
+    <ClInclude Include="..\Classes\Chapter12\Msg\FireMsg.h" />
+    <ClInclude Include="..\Classes\Chapter12\Msg\Msg.h" />
+    <ClInclude Include="..\Classes\Chapter12\Msg\TankMoveMsg.h" />
+    <ClInclude Include="..\Classes\Chapter12\Msg\TankNewMsg.h" />
+    <ClInclude Include="..\Classes\Chapter12\NetClient.h" />
+    <ClInclude Include="..\Classes\Chapter12\ODSocket\ODSocket.h" />
+    <ClInclude Include="..\Classes\Chapter12\ODSocket\stdafx.h" />
+    <ClInclude Include="..\Classes\Chapter12\ODSocket\targetver.h" />
+    <ClInclude Include="..\Classes\Chapter12\ODSocket\tchar.h" />
+    <ClInclude Include="..\Classes\Chapter12\Tank.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
