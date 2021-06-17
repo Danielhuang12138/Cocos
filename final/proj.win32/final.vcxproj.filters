@@ -18,9 +18,6 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Chapter12\BaseObject.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -33,28 +30,10 @@
     <ClCompile Include="..\Classes\Chapter12\GameClient.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\NetClient.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Chapter12\Tank.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\ODSocket\ODSocket.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\Classes\Chapter12\ODSocket\stdafx.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\Msg\FireMsg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\Msg\Msg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\Msg\TankMoveMsg.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\Msg\TankNewMsg.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -63,9 +42,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\AppDelegate.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Chapter12\BaseObject.h">
@@ -83,13 +59,7 @@
     <ClInclude Include="..\Classes\Chapter12\Global.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\NetClient.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="..\Classes\Chapter12\Tank.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\ODSocket.h">
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Chapter12\ODSocket\stdafx.h">
@@ -99,18 +69,6 @@
       <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="..\Classes\Chapter12\ODSocket\tchar.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\Msg\FireMsg.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\Msg\Msg.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\Msg\TankMoveMsg.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\Msg\TankNewMsg.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
