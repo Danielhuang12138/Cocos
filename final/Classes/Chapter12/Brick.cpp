@@ -49,3 +49,53 @@ void Brick::Blast()
 	this->removeFromParent();  
 }
 
+Wbrick::Wbrick()
+{
+
+}
+
+Wbrick::~Wbrick()
+{
+
+}
+
+
+bool Wbrick::init(Vec2 position)
+{
+	if (!Sprite::init())
+	{
+		return false;
+	}
+
+	m_sprite = Sprite::create("Chapter12/tank/tile.png", Rect(32, 0, 16, 16));
+
+	this->addChild(m_sprite);
+	m_sprite->setPosition(Vec2::ZERO);
+
+	this->setPosition(position);
+	m_rect = Rect(this->getPositionX() - 8, this->getPositionY() - 8, 16, 16);
+
+	return true;
+}
+
+Wbrick* Wbrick::create(Vec2 position)
+{
+	Wbrick* pRet = new(std::nothrow) Wbrick();
+	if (pRet && pRet->init(position))
+	{
+		pRet->autorelease();
+		return pRet;
+	}
+	else
+	{
+		delete pRet;
+		pRet = NULL;
+		return NULL;
+	}
+}
+
+void Wbrick::Blast()
+{
+	this->setVisible(false);   // 砖块消失
+	this->removeFromParent();
+}

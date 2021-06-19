@@ -22,6 +22,7 @@ public:
 	void createBackGround();
 	void update(float delta);
 	void drawBigBG(Vec2 position);
+	void drawWbigBG(Vec2 position);
 
 	// 对网络传来的消息作出响应
 	void addTank(int id, float x, float y, int dir, int kind);
@@ -37,6 +38,7 @@ public:
 
 private:
 	Vector<Brick*>  m_bgList;     // 背景块列表
+	Vector<Wbrick*> m_wbgList;	  // 加强墙
 	Vector<Tank*>   m_tankList;   // 坦克列表
 	Tank*           m_tank;       // 主坦克
 	Vector<Tank*>	m_drawList;   // 已绘制的坦克
@@ -45,6 +47,7 @@ private:
 	Vector<Tank*>   m_shouldFireList;     // 记录需要开火的坦克 - 处理接收到开火消息的坦克
 
 	Vector<Bullet*> m_deleteBulletList;   // 删除子弹列表
+	Vector<Ubullet*> m_deleteUbulletList;
 	Vector<Brick*>  m_deleteBrickList;    // 删除砖块列表
 	Vector<Tank*>   m_deleteTankList;     // 删除坦克列表
 };

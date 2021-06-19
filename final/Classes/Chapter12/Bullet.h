@@ -32,4 +32,22 @@ private:
 	Rect        m_rect;			// 碰撞矩形
 };
 
+class Ubullet :public BaseObject {
+public:
+	Ubullet();
+	~Ubullet();
+	static Ubullet* create(Vec2 position, float speed, int dir);
+	void Blast();
+	Rect getRect() { return m_rect; };
+private:
+	virtual bool init(Vec2 position, float speed, int dir);
+	void update(float delta);
+	void deleteObj(Sprite* obj);
+private:
+	Sprite*		m_sprite;
+	Texture2D*	m_texture;
+	Rect		m_rect;
+
+};
+
 #endif

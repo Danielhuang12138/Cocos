@@ -34,8 +34,11 @@ public:
 	void Blast();     // 爆炸时已自动设置life为0
 
 	bool isMoving() { return m_isMoving; };
+	bool ispromot() { return m_promot; };
+	bool getfireup() { return fireup; };
 	Rect getRect() { return m_rect; };
 	Vector<Bullet*> getBulletList() { return m_bulletList; };
+	Vector<Ubullet*> getUbulletList() { return m_ubulletList; };
 private:
 	virtual bool init(int ID, float x, float y, int dir, int kind);
 	void Draw();
@@ -46,18 +49,20 @@ private:
 	Sprite*     m_sprite;          // 图片精灵
 	Texture2D*  m_texture;         // 保存texture
 	Vector<Bullet*> m_bulletList;  // 子弹列表
+	Vector<Ubullet*> m_ubulletList;
 
 	bool  m_moveUp;             // 坦克往上移动
 	bool  m_moveDown;           // 坦克往下移动
 	bool  m_moveLeft;           // 坦克往左移动
 	bool  m_moveRight;			// 坦克往右移动
-
+	bool  fireup;
 	float m_frametime;			// 切换图片时间步长
 	float m_temptime;			// 每经过temptime切换图片
 	int   m_texchange;			// 坦克履带纹理切换控制
 
 	Rect  m_rect;               // 坦克包围框
 	bool  m_isMoving;           // 坦克正在移动
+	bool m_promot;
 
 	int   m_textureX;           
 	int   m_textureY;

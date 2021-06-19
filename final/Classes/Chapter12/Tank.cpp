@@ -32,7 +32,7 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 	m_moveRight = FALSE;
 	m_moveLeft = FALSE;
 
-	m_isMoving = false;
+	m_isMoving = true;
 
 	m_frametime = 2.0;
 	m_temptime = 0;
@@ -78,6 +78,7 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 	m_rect = Rect(this->getPositionX() - 16, this->getPositionY() - 16, 32, 32);
 	m_sprite->setPosition(Vec2::ZERO);
 	m_sprite->setScale(TANKSIZE/28);
+	fireup = true;
 	this->addChild(m_sprite);
 
 	this->scheduleUpdate();
@@ -142,9 +143,16 @@ void Tank::Fire()
 		position = Vec2(this->getPositionX() + 14, this->getPositionY());
 		break;
 	}
-	auto bullet = Bullet::create(position, 3, this->getDirection());
-	m_bulletList.pushBack(bullet);            // 添加到子弹列表
-	this->getParent()->addChild(bullet, 8);   // 添加到游戏场景
+	if (!fireup) {
+		auto bullet = Bullet::create(position, 3, this->getDirection());
+		m_bulletList.pushBack(bullet);            // 添加到子弹列表
+		this->getParent()->addChild(bullet, 8);   // 添加到游戏场景
+	}
+	else {
+		auto bullet = Ubullet::create(position,3,this->getDirection());
+		m_ubulletList.pushBack(bullet);
+		this->getParent()->addChild(bullet, 8);
+	}
 }
 
 void Tank::Draw()
@@ -183,27 +191,52 @@ void Tank::Blast()
 {
 	this->setVisible(false);   // 坦克消失
 	this->setLife(0);
-	auto explode = Sprite::create("Chapter12/tank/explode2.png");
-	this->getParent()->addChild(explode);
-	explode->setPosition(this->getPosition());  // 显示爆炸
-	explode->runAction(Sequence::create(
-		DelayTime::create(0.3f),
-		FadeOut::create(0.3f),                  // 爆炸消失
-		CallFunc::create(CC_CALLBACK_0(Tank::deleteObj, this, explode)),
-		NULL
+	if (!fireup) {
+		auto explode = Sprite::create("Chapter12/tank/explode2.png");
+		this->getParent()->addChild(explode);
+		explode->setPosition(this->getPosition());  // 显示爆炸
+		explode->runAction(Sequence::create(
+			DelayTime::create(0.3f),
+			FadeOut::create(0.3f),                  // 爆炸消失
+			CallFunc::create(CC_CALLBACK_0(Tank::deleteObj, this, explode)),
+			NULL
 		));
+	}
+	else {
+		auto explode = Sprite::create("Chapter12/tank/uexplode2.png");
+		this->getParent()->addChild(explode);
+		explode->setPosition(this->getPosition());  // 显示爆炸
+		explode->runAction(Sequence::create(
+			DelayTime::create(0.3f),
+			FadeOut::create(0.3f),                  // 爆炸消失
+			CallFunc::create(CC_CALLBACK_0(Tank::deleteObj, this, explode)),
+			NULL
+		));
+	}
 }
 
 void Tank::update(float t)
 {
 	m_isMoving = m_moveUp | m_moveDown | m_moveLeft | m_moveRight;				 // 更新移动状态
 	m_rect = Rect(this->getPositionX() - 16, this->getPositionY() - 16, 32, 32); // 更新rect
-	for (int i = 0;i < m_bulletList.size();i++)
-	{
-		auto nowBullet = m_bulletList.at(i);
-		if (nowBullet->getLife() <= 0)
+	if (!fireup) {
+		for (int i = 0; i < m_bulletList.size(); i++)
 		{
-			m_bulletList.eraseObject(nowBullet);
+			auto nowBullet = m_bulletList.at(i);
+			if (nowBullet->getLife() <= 0)
+			{
+				m_bulletList.eraseObject(nowBullet);
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < m_ubulletList.size(); i++)
+		{
+			auto nowBullet = m_ubulletList.at(i);
+			if (nowBullet->getLife() <= 0)
+			{
+				m_ubulletList.eraseObject(nowBullet);
+			}
 		}
 	}
 	if (this->getLife() <= 0)

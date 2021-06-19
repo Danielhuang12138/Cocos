@@ -22,4 +22,19 @@ private:
 	Rect m_rect;       // 包围框
 };
 
+class Wbrick :public Sprite {
+public:
+	Wbrick();
+	~Wbrick();
+	static Wbrick* create(Vec2 position);
+	virtual bool init(Vec2 position);
+	void Blast();
+	Rect getRect() { return m_rect; };
+
+private:
+	Sprite* m_sprite;
+	Rect m_rect;
+
+};
+
 #endif

@@ -89,7 +89,8 @@ void GameClient::update(float delta)
 		{
 			auto nowTank = m_tankList.at(i);
 			auto nowBrick = m_bgList.at(j);
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_UP))
+			auto nowWbrick = m_wbgList.at(j);
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_UP)|| nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_UP))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_UP);
@@ -98,7 +99,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_UP);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_DOWN))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_DOWN) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_DOWN))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_DOWN); 
@@ -107,7 +108,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_DOWN);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_LEFT))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_LEFT) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_LEFT))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_LEFT); 
@@ -116,7 +117,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_LEFT);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_RIGHT); 
@@ -232,9 +233,9 @@ void GameClient::createBackGround()
 	this->addChild(map, 10);
 
 	drawBigBG(Vec2(16 * 16, 25 * 16));
-	drawBigBG(Vec2(44 * 16, 25 * 16));
+	drawWbigBG(Vec2(44 * 16, 25 * 16));
 	drawBigBG(Vec2(16 * 16, 14 * 16));
-	drawBigBG(Vec2(44 * 16, 14 * 16));
+	drawWbigBG(Vec2(44 * 16, 14 * 16));
 }
 
 // 绘制单个回字砖块
@@ -255,6 +256,25 @@ void GameClient::drawBigBG(Vec2 position)
 		}
 	}
 }
+
+void GameClient::drawWbigBG(Vec2 position) {
+	for (int i = -2; i < 4; i++)
+	{
+		for (int j = -2; j < 4; j++)
+		{
+			if ((i == 1) && (j == 0) || (i == 0) && (j == 0) || (i == 1) && (j == 1) || (i == 0) && (j == 1))
+			{
+				// 中间留空形成回字
+				continue;
+			}
+			auto wbrick = Wbrick::create(Vec2(position.x + (0.5 - i) * 16, position.y + (0.5 - j) * 16));
+			m_wbgList.pushBack(wbrick);
+			this->addChild(wbrick, 2);
+		}
+	}
+
+}
+
 
 void GameClient::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
