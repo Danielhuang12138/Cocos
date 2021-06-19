@@ -22,7 +22,8 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 		return false;
 	}
 	Director::getInstance()->setProjection(Director::Projection::_2D); // 改为正交投影，避免图片模糊
-
+	killcount = 0;
+	direc = 4;
 	setLife(TANKBASELIFE); // tank life
 	setSpeed(TANKSPEED);   // tank speed
 	setLevel(1);           // tank level
@@ -78,9 +79,8 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 	m_rect = Rect(this->getPositionX() - 16, this->getPositionY() - 16, 32, 32);
 	m_sprite->setPosition(Vec2::ZERO);
 	m_sprite->setScale(TANKSIZE/28);
-	fireup = true;
 	this->addChild(m_sprite);
-
+	cool = time(&cool);
 	this->scheduleUpdate();
 	return true;
 }
@@ -325,4 +325,10 @@ void Tank::Boost() {
 void Tank::EndBoost() {
 	setSpeed(TANKSPEED);
 	isBoost = false;
+}
+
+void Tank::fireupgra() {
+	fireup = true;
+	setLevel(3);
+	Draw();
 }

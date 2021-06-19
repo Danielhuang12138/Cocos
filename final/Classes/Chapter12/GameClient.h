@@ -22,16 +22,21 @@ public:
 	static Scene* createScene();
 	void createBackGround();
 	void update(float delta);
+	void AIcontrol();
 	void drawBigBG(Vec2 position);
 	void drawWbigBG(Vec2 position);
-
+	int idcount;
+	time_t newtank;
+	time_t now;
 	// 对网络传来的消息作出响应
 	void addTank(int id, float x, float y, int dir, int kind);
-	void addFire(Tank* tank);
 
 	// 实现键盘回调
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event); 
+	void greboot();
+	void gpause();
+	void gresume();
 
 	// get
 	Tank* getTank() { return m_tank; };

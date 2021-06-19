@@ -32,7 +32,10 @@ class Tank : public BaseObject
 public:
 	time_t boost;
 	time_t now;
+	time_t cool;
+	int killcount;
 	bool isBoost;
+	int direc;
 	static Tank* create(int ID, float x, float y, int dir, int kind);
 	void MoveUP();
 	void MoveDown();
@@ -43,6 +46,8 @@ public:
 	void Blast();     // 爆炸时已自动设置life为0
 	void Boost();
 	void EndBoost();
+	void fireupgra();
+
 	bool isMoving() { return m_isMoving; };
 	bool ispromot() { return m_promot; };
 	bool getfireup() { return fireup; };

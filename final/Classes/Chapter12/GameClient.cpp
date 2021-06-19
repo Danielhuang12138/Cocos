@@ -12,13 +12,15 @@ GameClient::~GameClient()
 
 bool GameClient::init()
 {
+	srand((unsigned int)time(NULL));
 	if (!Scene::init())
 	{
 		return false;
 	}
-
+	idcount = 0;
 	// 背景
 	createBackGround();
+	newtank = time(&newtank);
 
 	// 玩家
 	m_tank = Tank::create(110, WINDOWWIDTH/2, 100, 1, 2);
@@ -48,6 +50,13 @@ Scene* GameClient::createScene()
 
 void GameClient::update(float delta)
 {
+	AIcontrol();
+	now = time(&now);
+	if (now - newtank > 5) {
+		addTank(idcount, WINDOWWIDTH / 2, 50, 1, 1);
+		idcount++;
+		newtank = now;
+	}
 	// 收到传来的开火消息的坦克执行Fire
 	if (m_shouldFireList.size() > 0)
 	{
@@ -83,6 +92,9 @@ void GameClient::update(float delta)
 	}
 
 	auto playtank = m_tankList.at(0);
+	if (playtank->killcount > 5) {
+		playtank->fireupgra();
+	}
 	if (playtank->isBoost) {
 		playtank->now = time(&playtank->now);
 		if (playtank->now - 5 > playtank->boost) {
@@ -92,12 +104,19 @@ void GameClient::update(float delta)
 	if (playtank->getfireup()) {
 		for (int j = 0; j < playtank->getUbulletList().size(); j++) {
 			auto bullet = playtank->getUbulletList().at(j);
-			for (int k = 0; k < m_tankList.size(); k++) {
+			for (int k = 1; k < m_tankList.size(); k++) {
 				auto tank_another = m_tankList.at(k);
 				if (playtank->getID() != tank_another->getID()) {
 					if (bullet->getRect().intersectsRect(tank_another->getRect())) {
 						m_deleteUbulletList.pushBack(bullet);
 						m_deleteTankList.pushBack(tank_another);
+					}
+				}
+				for (int l = 0; l < tank_another->getBulletList().size(); l++) {
+					auto abullet = tank_another->getBulletList().at(l);
+					if (bullet->getRect().intersectsRect(abullet->getRect())) {
+						m_deleteUbulletList.pushBack(bullet);
+						m_deleteBulletList.pushBack(abullet);
 					}
 				}
 			}
@@ -254,6 +273,9 @@ void GameClient::update(float delta)
 
 						// 坦克消除
 						m_deleteTankList.pushBack(tank_another);
+						if (i == 0) {
+							tank->killcount++;
+						}
 					}
 				}
 			}
@@ -276,6 +298,38 @@ void GameClient::update(float delta)
 				}
 			}
 		}
+
+		for (int j = 0; j < tank->getBulletList().size(); j++) {
+			auto bullet = tank->getBulletList().at(j);
+			for (int k = 0; k < m_tankList.size(); k++) {
+				auto atank = m_tankList.at(k);
+				for (int l = 0; l < atank->getBulletList().size(); l++) {
+					auto abullet = atank->getBulletList().at(l);
+					if (bullet->getRect().intersectsRect(abullet->getRect())&&i!=k) {
+						m_deleteBulletList.pushBack(bullet);
+						m_deleteBulletList.pushBack(abullet);
+					}
+				}
+			}
+		}
+
+		for (int j = 0; j < tank->getBulletList().size(); j++)
+		{
+			auto bullet = tank->getBulletList().at(j);
+			for (int k = 0; k < m_wbgList.size(); k++)
+			{
+				auto brick = m_wbgList.at(k);
+				if (bullet->getRect().intersectsRect(brick->getRect()))
+				{
+					// 子弹消除
+					m_deleteBulletList.pushBack(bullet);
+
+					// 砖块消除
+					//m_deleteBrickList.pushBack(brick);
+				}
+			}
+		}
+
 
 		// 清除删除子弹列表
 		for (int j = 0; j < m_deleteBulletList.size(); j ++)
@@ -438,9 +492,116 @@ void GameClient::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_E:
 	{
-		if()
-		m_tank->Boost();
+		m_tank->now = time(&m_tank->now);
+		if (m_tank->now - m_tank->boost>20) {
+			m_tank->Boost();
+		}
+	}
+	break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_P:
+	{
+		gpause();
+	}
+	break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_R:
+	{
+		greboot();
+	}
+	break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_O:
+	{
+		gresume();
 	}
 	break;
 	}
+}
+
+void GameClient::addTank(int id, float x, float y, int dir, int kind)
+{
+	m_maxTank[tankcount] = Tank::create(id, x, y, dir, kind);
+	m_tankList.pushBack(m_maxTank[tankcount++]);
+}
+
+void GameClient::AIcontrol() {
+	for (int i = 1; i < m_tankList.size(); i++) {
+		auto tank = m_tankList.at(i);
+		tank->now = time(&tank->now);
+		if (tank->now - tank->boost > 1) {
+			if (tank->direc >3) {
+				int direc = (int)(CCRANDOM_0_1() * 5) % 4;
+				tank->direc = direc;
+			}
+			switch (tank->direc) {
+			case 0: {
+				tank->MoveDown();
+				tank->direc = 0;
+			}
+					break;
+			case 1: {
+				tank->MoveUP();
+				tank->direc = 1;
+			}
+					break;
+			case 2: {
+				tank->MoveLeft();
+				tank->direc = 2;
+			}
+					break;
+			case 3: {
+				tank->MoveRight();
+				tank->direc = 3;
+			}
+					break;
+			}
+		}
+		if (tank->now - tank->boost > 5) {
+			if (tank->direc < 4) {
+				tank->direc += 4;
+			}
+			tank->boost = time(&tank->boost);
+			switch (tank->direc - 4) {
+			case 0: {
+				tank->Stay(TANK_DOWN);
+			}
+					break;
+			case 1: {
+				tank->Stay(TANK_UP);
+			}
+					break;
+			case 2: {
+				tank->Stay(TANK_LEFT);
+			}
+					break;
+			case 3: {
+				tank->Stay(TANK_RIGHT);
+			}
+					break;
+			}
+		}
+
+		int firecontrol=0;
+		if (tank->now - tank->cool > 1)
+			firecontrol = (int)(CCRANDOM_0_1() * 2) % 3;
+		if (firecontrol == 1 && tank->getBulletList().size() == 0) {
+				tank->Fire();
+		}
+		else if(tank->cool==tank->now){
+			tank->cool = time(&tank->cool);
+		}
+		if (tank->getBulletList().size() > 0) {
+			tank->cool = time(&tank->cool);
+		}
+	}
+}
+
+void GameClient::greboot() {
+	CCDirector::sharedDirector()->replaceScene(CCTransitionFade::create(1.5f, GameClient::createScene()));
+}
+
+void GameClient::gpause() {
+	CCDirector::sharedDirector()->pause();
+}
+
+void GameClient::gresume() {
+	CCDirector::sharedDirector()->resume();
 }
