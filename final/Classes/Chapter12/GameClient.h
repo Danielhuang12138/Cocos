@@ -49,6 +49,7 @@ private:
 	Vector<Bullet*> m_deleteBulletList;   // 删除子弹列表
 	Vector<Ubullet*> m_deleteUbulletList;
 	Vector<Brick*>  m_deleteBrickList;    // 删除砖块列表
+	Vector<Wbrick*> m_deleteWbrickList;
 	Vector<Tank*>   m_deleteTankList;     // 删除坦克列表
 };
 

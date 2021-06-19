@@ -82,6 +82,42 @@ void GameClient::update(float delta)
 		}
 	}
 
+	auto playtank = m_tankList.at(0);
+	if (playtank->getfireup()) {
+		for (int j = 0; j < playtank->getUbulletList().size(); j++) {
+			auto bullet = playtank->getUbulletList().at(j);
+			for (int k = 0; k < m_tankList.size(); k++) {
+				auto tank_another = m_tankList.at(k);
+				if (playtank->getID() != tank_another->getID()) {
+					if (bullet->getRect().intersectsRect(tank_another->getRect())) {
+						m_deleteUbulletList.pushBack(bullet);
+						m_deleteTankList.pushBack(tank_another);
+					}
+				}
+			}
+		}
+
+		for (int j = 0; j < playtank->getUbulletList().size(); j++) {
+			auto bullet = playtank->getUbulletList().at(j);
+			for (int k = 0; k < m_bgList.size(); k++) {
+				auto brick = m_bgList.at(k);
+				
+				if (bullet->getRect().intersectsRect(brick->getRect())) {
+					m_deleteUbulletList.pushBack(bullet);
+					m_deleteBrickList.pushBack(brick);
+				}
+				
+			}
+			for (int k = 0; k < m_wbgList.size(); k++) {
+				auto wbrick = m_wbgList.at(k);
+				if (bullet->getRect().intersectsRect(wbrick->getRect())) {
+					m_deleteUbulletList.pushBack(bullet);
+					m_deleteWbrickList.pushBack(wbrick);
+				}
+			}
+		}
+	}
+
 	// 坦克与 坦克，物品的碰撞检测
 	for (int i = 0;i < m_tankList.size(); i++)
 	{
@@ -89,8 +125,7 @@ void GameClient::update(float delta)
 		{
 			auto nowTank = m_tankList.at(i);
 			auto nowBrick = m_bgList.at(j);
-			auto nowWbrick = m_wbgList.at(j);
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_UP)|| nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_UP))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_UP))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_UP);
@@ -99,7 +134,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_UP);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_DOWN) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_DOWN))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_DOWN))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_DOWN); 
@@ -108,7 +143,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_DOWN);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_LEFT) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_LEFT))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_LEFT))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_LEFT); 
@@ -117,7 +152,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_LEFT);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT) || nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_RIGHT); 
@@ -127,6 +162,48 @@ void GameClient::update(float delta)
 				// nowTank->Stay(TANK_RIGHT);
 			}
 		}
+		for (int j = 0; j < m_wbgList.size(); j++)
+		{
+			auto nowWbrick = m_wbgList.at(j);
+			auto nowTank = m_tankList.at(i);
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_UP))
+			{
+				// 方法1：履带持续转动
+				nowTank->setHindered(TANK_UP);
+				nowTank->setPositionY(nowTank->getPositionY() - 1); // 避免检测成功后坦克持续受，无法行动造成卡住
+
+				// 方法2：履带停止转动
+				// nowTank->Stay(TANK_UP);
+			}
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_DOWN))
+			{
+				// 方法1：履带持续转动
+				nowTank->setHindered(TANK_DOWN);
+				nowTank->setPositionY(nowTank->getPositionY() + 1); // 避免检测成功后坦克持续受，无法行动造成卡住
+
+				// 方法2：履带停止转动
+				// nowTank->Stay(TANK_DOWN);
+			}
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_LEFT))
+			{
+				// 方法1：履带持续转动
+				nowTank->setHindered(TANK_LEFT);
+				nowTank->setPositionX(nowTank->getPositionX() + 1); // 避免检测成功后坦克持续受，无法行动造成卡住
+
+				// 方法2：履带停止转动
+				// nowTank->Stay(TANK_LEFT);
+			}
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowWbrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
+			{
+				// 方法1：履带持续转动
+				nowTank->setHindered(TANK_RIGHT);
+				nowTank->setPositionX(nowTank->getPositionX() - 1); // 避免检测成功后坦克持续受，无法行动造成卡住
+
+				// 方法2：履带停止转动
+				// nowTank->Stay(TANK_RIGHT);
+			}
+		}
+		
 		// 坦克与坦克
 		for (int j = 0; j < m_tankList.size(); j ++)
 		{
@@ -203,12 +280,27 @@ void GameClient::update(float delta)
 			bullet->Blast();
 		}
 
+		for (int j = 0; j < m_deleteUbulletList.size(); j++)
+		{
+			auto ubullet = m_deleteUbulletList.at(j);
+			m_deleteUbulletList.eraseObject(ubullet);
+			tank->getUbulletList().eraseObject(ubullet);
+			ubullet->Blast();
+		}
+
 		// 清除删除砖块列表
 		for (int j = 0; j < m_deleteBrickList.size(); j ++)
 		{
 			auto brick = m_deleteBrickList.at(j);
 			m_deleteBrickList.eraseObject(brick);
 			m_bgList.eraseObject(brick);
+			brick->Blast();
+		}
+
+		for (int j = 0; j < m_deleteWbrickList.size(); j++) {
+			auto brick = m_deleteWbrickList.at(j);
+			m_deleteWbrickList.eraseObject(brick);
+			m_wbgList.eraseObject(brick);
 			brick->Blast();
 		}
 
@@ -220,6 +312,9 @@ void GameClient::update(float delta)
 			m_tankList.eraseObject(tank);
 			tank->Blast();
 		}
+
+		m_deleteWbrickList.clear();
+		m_deleteUbulletList.clear();
 		m_deleteBulletList.clear();
 		m_deleteBrickList.clear();
 		m_deleteTankList.clear();
