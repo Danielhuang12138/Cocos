@@ -31,9 +31,9 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 	m_moveDown = FALSE;
 	m_moveRight = FALSE;
 	m_moveLeft = FALSE;
-
+	isBoost = false;
 	m_isMoving = true;
-
+	boost = time(&boost);
 	m_frametime = 2.0;
 	m_temptime = 0;
 
@@ -124,6 +124,8 @@ void Tank::MoveRight()
 
 	setDirection(TANK_RIGHT);
 }
+
+
 
 void Tank::Fire()
 {
@@ -312,4 +314,15 @@ void Tank::deleteObj(Sprite* obj)
 {
 	obj->removeFromParent();
 	this->removeFromParent();
+}
+
+void Tank::Boost() {
+	setSpeed(2);
+	boost = time(&boost);
+	isBoost = true;
+}
+
+void Tank::EndBoost() {
+	setSpeed(TANKSPEED);
+	isBoost = false;
 }

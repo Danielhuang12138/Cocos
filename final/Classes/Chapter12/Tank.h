@@ -7,6 +7,7 @@
 #include "ui/CocosGUI.h"
 #include "Global.h"
 #include "Bullet.h"
+#include "time.h"
 USING_NS_CC;
 using namespace cocos2d;
 using namespace cocostudio;
@@ -20,10 +21,18 @@ using namespace cocos2d::ui;
 #define TANK_LEFT    3    // TANK向左状态
 #define TANK_RIGHT   4    // TANK向右状态
 #define TANK_STAY    5    // TANK停止状态
+#define TANK_HUP	 6	  // TANK高速向上
+#define TANK_HDOWN	 7	  // TANK高速向下
+#define TANK_HLEFT	 8	  // TANK高速向左
+#define TANK_HRIGHT  9	  // TANK高速向右
+
 
 class Tank : public BaseObject
 {
 public:
+	time_t boost;
+	time_t now;
+	bool isBoost;
 	static Tank* create(int ID, float x, float y, int dir, int kind);
 	void MoveUP();
 	void MoveDown();
@@ -32,7 +41,8 @@ public:
 	void Fire();
 	void Stay(int dir);
 	void Blast();     // 爆炸时已自动设置life为0
-
+	void Boost();
+	void EndBoost();
 	bool isMoving() { return m_isMoving; };
 	bool ispromot() { return m_promot; };
 	bool getfireup() { return fireup; };

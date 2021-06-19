@@ -83,6 +83,12 @@ void GameClient::update(float delta)
 	}
 
 	auto playtank = m_tankList.at(0);
+	if (playtank->isBoost) {
+		playtank->now = time(&playtank->now);
+		if (playtank->now - 5 > playtank->boost) {
+			playtank->EndBoost();
+		}
+	}
 	if (playtank->getfireup()) {
 		for (int j = 0; j < playtank->getUbulletList().size(); j++) {
 			auto bullet = playtank->getUbulletList().at(j);
@@ -370,7 +376,6 @@ void GameClient::drawWbigBG(Vec2 position) {
 
 }
 
-
 void GameClient::onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event)
 {
 
@@ -426,10 +431,16 @@ void GameClient::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 			m_tank->Stay(TANK_RIGHT);
 		}
 		break;
-	case cocos2d::EventKeyboard::KeyCode::KEY_K:
+	case cocos2d::EventKeyboard::KeyCode::KEY_F:
 		{
 			m_tank->Fire();
 		}
 		break;
+	case cocos2d::EventKeyboard::KeyCode::KEY_E:
+	{
+		if()
+		m_tank->Boost();
+	}
+	break;
 	}
 }

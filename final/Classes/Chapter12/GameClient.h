@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "Tank.h"
 #include "Brick.h"
+#include "time.h"
 USING_NS_CC;
 using namespace cocos2d;
 
