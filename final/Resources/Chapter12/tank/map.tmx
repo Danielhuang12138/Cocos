@@ -2343,8 +2343,8 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="7"/>
-   <tile gid="8"/>
+   <tile gid="15"/>
+   <tile gid="16"/>
    <tile/>
    <tile/>
    <tile/>
@@ -2403,8 +2403,8 @@
    <tile/>
    <tile/>
    <tile/>
-   <tile gid="7"/>
-   <tile gid="8"/>
+   <tile gid="33"/>
+   <tile gid="34"/>
   </data>
  </layer>
 </map>

@@ -12,6 +12,7 @@ GameClient::~GameClient()
 
 bool GameClient::init()
 {
+	playerlives = 3;
 	now = time(&now);
 	srand((unsigned int)time(NULL));
 	if (!Scene::init())
@@ -24,7 +25,7 @@ bool GameClient::init()
 	newtank = time(&newtank);
 	roundcount = 25;
 	// 玩家
-	m_tank = Tank::create(110, WINDOWWIDTH/2, 100, 1, 2);
+	m_tank = Tank::create(11000,160, 570, 1, 2);
 	m_tankList.pushBack(m_tank);
 
 	// 碰撞检测
@@ -40,19 +41,46 @@ bool GameClient::init()
 	m_pause = NULL;
 	std::string s1 = "TOTAL KILL: ";
 	std::string s2 = std::to_string(m_tank->killcount);
-	std::string s3 = s1 + s2;
+	std::string s4 = "/24";
+	std::string s3 = s1 + s2+s4;
 	m_killcount = Label::createWithSystemFont(s3, "System", 25);
 	m_killcount->setTextColor(Color4B(255, 255, 255, 255));
 	m_killcount->setPosition(Vec2(1080, 580));
 	this->addChild(m_killcount, 10);
-	s1 = "BOOST READY IN:";
+	s1 = "BOOST IN:";
 	s2 = std::to_string(20 - (now - m_tank->boost));
 	s3 = s1 + s2;
 	m_boostct = Label::createWithSystemFont(s3, "System", 25);
 	m_boostct->setTextColor(Color4B(255, 255, 255, 255));
 	m_boostct->setPosition(Vec2(1080, 550));
 	this->addChild(m_boostct, 10);
-
+	m_ammo = Label::createWithSystemFont("AMMO: APC", "System", 25);
+	m_ammo->setTextColor(Color4B(255, 255, 255, 255));
+	m_ammo->setPosition(Vec2(1080, 520));
+	this->addChild(m_ammo, 10);
+	m_reload = Label::createWithSystemFont("GUN RELOADING", "System", 25);
+	if (now - m_tank->cool < 2) {
+		s1 = "RELOADING ";
+		s2 = std::to_string(2 - (now - m_tank->cool));
+		s3 = " S";
+		s4 = s1 + s2 + s3;
+		m_reload = Label::createWithSystemFont(s4, "System", 25);
+		m_reload->setTextColor(Color4B(255, 255, 255, 255));
+		m_reload->setPosition(Vec2(1080, 490));
+		m_reload->enableShadow(Color4B(255, 255, 0, 255), Size(2, 2));
+	}
+	else {
+		m_reload = Label::createWithSystemFont("GUN RELOADED!", "System", 25);
+		m_reload->setTextColor(Color4B(255, 255, 255, 255));
+		m_reload->setPosition(Vec2(1080, 490));
+		m_reload->enableShadow(Color4B(0, 255, 0, 255), Size(2, 2));
+	}
+	this->addChild(m_reload, 10);
+	m_lives = Label::createWithSystemFont("Lives: 3", "System", 25);
+	m_lives->setTextColor(Color4B(255, 255, 255, 255));
+	m_lives->setPosition(Vec2(1080, 460));
+	m_lives->enableShadow(Color4B(0, 255, 0, 255), Size(2, 2));
+	this->addChild(m_lives, 10);
 	return true;
 }
 
@@ -69,8 +97,10 @@ void GameClient::update(float delta)
 	AIcontrol();
 	Display();
 	now = time(&now);
-	if (now - newtank > 5&&roundcount-m_tank->killcount> 1&&m_tankList.size()<5) {
-		addTank(idcount, 480, 50, 1, 1);
+	int posx = (int)(CCRANDOM_0_1() * 6) % 5;
+	int posy = (int)(CCRANDOM_0_1() * 4) % 3;
+	if (now - newtank > 2&&roundcount-m_tank->killcount> 1&&m_tankList.size()<5) {
+		addTank(idcount, 930-(posx*2*16), 32+posy*2*16, 1, 1);
 		idcount++;
 		newtank = now;
 	}
@@ -109,7 +139,7 @@ void GameClient::update(float delta)
 	}
 
 	auto playtank = m_tankList.at(0);
-	if (playtank->killcount > 5) {
+	if (playtank->upcount > 5) {
 		playtank->fireupgra();
 	}
 	if (playtank->isBoost) {
@@ -128,6 +158,7 @@ void GameClient::update(float delta)
 						m_deleteUbulletList.pushBack(bullet);
 						m_deleteTankList.pushBack(tank_another);
 						playtank->killcount++;
+						playtank->upcount++;
 					}
 				}
 				for (int l = 0; l < tank_another->getBulletList().size(); l++) {
@@ -148,6 +179,8 @@ void GameClient::update(float delta)
 			if (bullet->getRect().intersectsRect(m_core->getRect())&&m_core->getLife()>0) {
 				m_deleteUbulletList.pushBack(bullet);
 				m_core->Blast();
+				GameOver();
+				m_deleteTankList.pushBack(m_tank);
 			}
 		}
 
@@ -181,6 +214,7 @@ void GameClient::update(float delta)
 			if (cbullet->getRect().intersectsRect(m_core->getRect())&&m_core->getLife()>0) {
 				GameOver();
 				m_core->Blast();
+				m_deleteTankList.pushBack(m_tank);
 			}
 		}
 		for (int j = 0; j < c_tank->getBulletList().size(); j++) {
@@ -315,9 +349,24 @@ void GameClient::update(float delta)
 						m_deleteBulletList.pushBack(bullet);
 
 						// 坦克消除
-						m_deleteTankList.pushBack(tank_another);
+						if (k==0) {
+							if (playerlives > 0) {
+								playerlives--;
+								PRespawn();
+							}
+							else {
+								m_deleteTankList.pushBack(tank_another);
+								GameOver();
+							}
+
+						}
+						else {
+							m_deleteTankList.pushBack(tank_another);
+						}
+						
 						if (i == 0) {
 							tank->killcount++;
+							tank->upcount++;
 						}
 					}
 				}
@@ -422,6 +471,9 @@ void GameClient::update(float delta)
 		m_deleteBrickList.clear();
 		m_deleteTankList.clear();
 	}
+	if (m_tank->killcount == 24) {
+		Victory();
+	}
 }
 
 // 绘制几个回字砖块
@@ -429,11 +481,19 @@ void GameClient::createBackGround()
 {
 	auto map = TMXTiledMap::create("Chapter12/tank/map.tmx");
 	this->addChild(map, 10);
-	drawCore(Vec2(16 * 16, 25 * 16));
-	drawBigBG(Vec2(16 * 16, 25 * 16));
-	drawWbigBG(Vec2(44 * 16, 25 * 16));
-	drawBigBG(Vec2(16 * 16, 14 * 16));
-	drawWbigBG(Vec2(44 * 16, 14 * 16));
+	drawCore(Vec2(15 * 16, 33 * 16));
+	drawBigBG(Vec2(15 * 16, 33 * 16));
+	drawBigBG(Vec2(15 * 16, 13 * 16));
+	drawBigBG(Vec2(15 * 16, 5 * 16));
+	drawBigBG(Vec2(28 * 16, 35 * 16));
+	drawBigBG(Vec2(37 * 16, 35 * 16));
+	drawBigBG(Vec2(45 * 16, 35 * 16));
+	drawBigBG(Vec2(45 * 16, 27 * 16));
+	drawBigBG(Vec2(45 * 16, 20 * 16));
+	drawBigBG(Vec2(27 * 16, 5 * 16));
+	drawBigBG(Vec2(38 * 16, 5 * 16));
+	drawWbigBG(Vec2(33 * 16, 19 * 16));
+	drawWbigBG(Vec2(33 * 16, 27 * 16));
 }
 
 void GameClient::drawCore(Vec2 position) {
@@ -535,7 +595,11 @@ void GameClient::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_F:
 		{
-			m_tank->Fire();
+			now = time(&now);
+			if (now - m_tank->cool > 2) {
+				m_tank->cool = time(&m_tank->cool);
+				m_tank->Fire();
+			}
 		}
 		break;
 	case cocos2d::EventKeyboard::KeyCode::KEY_E:
@@ -576,22 +640,22 @@ void GameClient::AIcontrol() {
 		tank->now = time(&tank->now);
 		if (tank->now - tank->boost > 1) {
 			if (tank->direc >3) {
-				int direc = (int)(CCRANDOM_0_1() * 5) % 4;
-				tank->direc = direc;
+				int direc = (int)(CCRANDOM_0_1() * 7) % 6;
+				tank->direc = direc%4;
 			}
 			switch (tank->direc) {
 			case 0: {
-				tank->MoveDown();
+				tank->MoveUP();
 				tank->direc = 0;
 			}
 					break;
 			case 1: {
-				tank->MoveUP();
+				tank->MoveLeft();
 				tank->direc = 1;
 			}
 					break;
 			case 2: {
-				tank->MoveLeft();
+				tank->MoveDown();
 				tank->direc = 2;
 			}
 					break;
@@ -628,7 +692,7 @@ void GameClient::AIcontrol() {
 		}
 
 		int firecontrol=0;
-		if (tank->now - tank->cool > 1)
+		if (tank->now - tank->cool > 2)
 			firecontrol = (int)(CCRANDOM_0_1() * 2) % 3;
 		if (firecontrol == 1 && tank->getBulletList().size() == 0) {
 				tank->Fire();
@@ -665,25 +729,79 @@ void GameClient::gresume() {
 }
 
 void GameClient::GameOver() {
-
+	auto gameover = Label::createWithSystemFont("     MISSION FAILED\nPRESS R TO RESTART", "System", 50);
+	gameover->setTextColor(Color4B(255, 0, 0, 255));
+	gameover->setPosition(Vec2(WINDOWWIDTH / 2, WINDOWHEIGHT / 2));
+	gameover->enableShadow(Color4B(255, 255, 255, 255), Size(3, 3));
+	this->addChild(gameover, 10);
 }
 
 void GameClient::Display() {
 	std::string s1 = "TOTAL KILL: ";
 	std::string s2 = std::to_string(m_tank->killcount);
-	std::string s3 = s1 + s2;
+	std::string s4 = "/24";
+	std::string s3 = s1 + s2+s4;
 	m_killcount->setString(s3);
 	now = time(&now);
 	if (20 - (now - m_tank->boost) > 0) {
 		s1 = "BOOST IN:";
 		s2 = std::to_string(20 - (now - m_tank->boost));
 		s3 = s1 + s2;
+		m_boostct->setString(s3);
+		m_boostct->enableShadow(Color4B(0, 0, 255, 255), Size(0, 0));
 	}
 	else {
 		s3 = "BOOST READY";
+		m_boostct->setString(s3);
+		m_boostct->enableShadow(Color4B(0, 0, 255, 255), Size(2, 2));
 	}
-	m_boostct->setString(s3);
+	
+	if (m_tank->getfireup()) {
+		m_ammo->setString("AMMO: AC");
+		m_ammo->enableShadow(Color4B(255, 0, 0, 255), Size(2, 2));
+	}
+	else {
+		m_ammo->setString("AMMO: APC");
+		m_ammo->enableShadow(Color4B(255, 0, 0, 255), Size(0, 0));
+	}
+	if (now - m_tank->cool <=2) {
+		s1 = "RELOADING ";
+		s2 = std::to_string(2 - (now - m_tank->cool));
+		s3 = " S";
+		s4 = s1 + s2 + s3;
+		m_reload->setString(s4);
+		m_reload->setTextColor(Color4B(255, 255, 255, 255));
+		m_reload->setPosition(Vec2(1080, 490));
+		m_reload->enableShadow(Color4B(255, 255, 0, 255), Size(2, 2));
+	}
+	else {
+		m_reload->setString("GUN RELOADED!");
+		m_reload->setTextColor(Color4B(255, 255, 255, 255));
+		m_reload->setPosition(Vec2(1080, 490));
+		m_reload->enableShadow(Color4B(0, 255, 0, 255), Size(2, 2));
+	}
+	if (playerlives == 2) {
+		m_lives->setString("Lives: 2");
+		m_lives->enableShadow(Color4B(255, 255, 0, 255), Size(2, 2));
+	}
+	else if (playerlives == 1) {
+		m_lives->setString("Lives: 1");
+		m_lives->enableShadow(Color4B(255, 122, 0, 255), Size(2, 2));
+	}
+	else if (playerlives == 0) {
+		m_lives->setString("Lives: 0");
+		m_lives->enableShadow(Color4B(255, 0, 0, 255), Size(2, 2));
+	}
+}
 
+void GameClient::PRespawn() {
+	m_tank->setPosition(Vec2(160,570));
+	m_tank->firedown();
+}
 
-
+void GameClient::Victory() {
+	auto victory = Label::createWithSystemFont("MISSION ACCOMPLISH", "System", 50);
+	victory->setTextColor(Color4B(0, 255, 0, 255));
+	victory->setPosition(Vec2(WINDOWWIDTH / 2, WINDOWHEIGHT / 2));
+	this->addChild(victory, 10);
 }

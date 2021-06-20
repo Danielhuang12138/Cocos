@@ -37,6 +37,7 @@ bool Tank::init(int ID, float x, float y, int dir, int kind)
 	boost = time(&boost);
 	m_frametime = 2.0;
 	m_temptime = 0;
+	upcount = 0;
 
 	// tank init ifo
 	setID(ID);
@@ -153,6 +154,7 @@ void Tank::Fire()
 	else {
 		auto bullet = Ubullet::create(position,3,this->getDirection());
 		m_ubulletList.pushBack(bullet);
+		if(this->getParent()!=NULL)
 		this->getParent()->addChild(bullet, 8);
 	}
 }
@@ -216,6 +218,7 @@ void Tank::Blast()
 		));
 	}
 }
+
 
 void Tank::update(float t)
 {
@@ -331,4 +334,11 @@ void Tank::fireupgra() {
 	fireup = true;
 	setLevel(3);
 	Draw();
+}
+
+void Tank::firedown() {
+	fireup = false;
+	setLevel(1);
+	Draw();
+	upcount = 0;
 }

@@ -28,8 +28,10 @@ public:
 	void drawCore(Vec2 position);
 	void drawBigBG(Vec2 position);
 	void drawWbigBG(Vec2 position);
+	void PRespawn();
 	int idcount;
 	int roundcount;
+	int playerlives;
 	time_t newtank;
 	time_t now;
 	// 对网络传来的消息作出响应
@@ -59,6 +61,9 @@ private:
 	Label*			m_pause;
 	Label*			m_killcount;
 	Label*			m_boostct;
+	Label*			m_lives;
+	Label*			m_ammo;
+	Label*			m_reload;
 	Tank*           m_maxTank[50];        // 允许链接客户数
 	Vector<Tank*>   m_shouldFireList;     // 记录需要开火的坦克 - 处理接收到开火消息的坦克
 
