@@ -99,7 +99,7 @@ void GameClient::update(float delta)
 	now = time(&now);
 	int posx = (int)(CCRANDOM_0_1() * 6) % 5;
 	int posy = (int)(CCRANDOM_0_1() * 4) % 3;
-	if (now - newtank > 2&&roundcount-m_tank->killcount> 1&&m_tankList.size()<5) {
+	if (now - newtank > 2&&roundcount-m_tank->killcount-m_tankList.size()> 0&&m_tankList.size()<5) {
 		addTank(idcount, 930-(posx*2*16), 32+posy*2*16, 1, 1);
 		idcount++;
 		newtank = now;
