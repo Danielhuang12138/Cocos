@@ -4,7 +4,9 @@
 #include "cocos2d.h"
 #include "Tank.h"
 #include "Brick.h"
+#include "core.h"
 #include "time.h"
+#include <string>
 USING_NS_CC;
 using namespace cocos2d;
 
@@ -23,9 +25,11 @@ public:
 	void createBackGround();
 	void update(float delta);
 	void AIcontrol();
+	void drawCore(Vec2 position);
 	void drawBigBG(Vec2 position);
 	void drawWbigBG(Vec2 position);
 	int idcount;
+	int roundcount;
 	time_t newtank;
 	time_t now;
 	// 对网络传来的消息作出响应
@@ -37,6 +41,9 @@ public:
 	void greboot();
 	void gpause();
 	void gresume();
+	void Display();
+	void GameOver();
+	void Victory();
 
 	// get
 	Tank* getTank() { return m_tank; };
@@ -47,8 +54,11 @@ private:
 	Vector<Wbrick*> m_wbgList;	  // 加强墙
 	Vector<Tank*>   m_tankList;   // 坦克列表
 	Tank*           m_tank;       // 主坦克
+	Core*			m_core;
 	Vector<Tank*>	m_drawList;   // 已绘制的坦克
-	
+	Label*			m_pause;
+	Label*			m_killcount;
+	Label*			m_boostct;
 	Tank*           m_maxTank[50];        // 允许链接客户数
 	Vector<Tank*>   m_shouldFireList;     // 记录需要开火的坦克 - 处理接收到开火消息的坦克
 

@@ -33,7 +33,7 @@
     <ClCompile Include="..\Classes\Chapter12\Tank.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\Classes\Chapter12\ODSocket\stdafx.cpp">
+    <ClCompile Include="..\Classes\Chapter12\core.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +62,7 @@
     <ClInclude Include="..\Classes\Chapter12\Tank.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\stdafx.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\targetver.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\tchar.h">
+    <ClInclude Include="..\Classes\Chapter12\core.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>

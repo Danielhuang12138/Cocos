@@ -1,5 +1,5 @@
 #include "GameClient.h"
-
+#include <string>
 GameClient::GameClient()
 {
 
@@ -12,6 +12,7 @@ GameClient::~GameClient()
 
 bool GameClient::init()
 {
+	now = time(&now);
 	srand((unsigned int)time(NULL));
 	if (!Scene::init())
 	{
@@ -21,7 +22,7 @@ bool GameClient::init()
 	// 背景
 	createBackGround();
 	newtank = time(&newtank);
-
+	roundcount = 25;
 	// 玩家
 	m_tank = Tank::create(110, WINDOWWIDTH/2, 100, 1, 2);
 	m_tankList.pushBack(m_tank);
@@ -36,6 +37,21 @@ bool GameClient::init()
 	Director::getInstance()->getEventDispatcher()->addEventListenerWithSceneGraphPriority(key_listener, this);
 
 	m_shouldFireList.clear(); 
+	m_pause = NULL;
+	std::string s1 = "TOTAL KILL: ";
+	std::string s2 = std::to_string(m_tank->killcount);
+	std::string s3 = s1 + s2;
+	m_killcount = Label::createWithSystemFont(s3, "System", 25);
+	m_killcount->setTextColor(Color4B(255, 255, 255, 255));
+	m_killcount->setPosition(Vec2(1080, 580));
+	this->addChild(m_killcount, 10);
+	s1 = "BOOST READY IN:";
+	s2 = std::to_string(20 - (now - m_tank->boost));
+	s3 = s1 + s2;
+	m_boostct = Label::createWithSystemFont(s3, "System", 25);
+	m_boostct->setTextColor(Color4B(255, 255, 255, 255));
+	m_boostct->setPosition(Vec2(1080, 550));
+	this->addChild(m_boostct, 10);
 
 	return true;
 }
@@ -51,9 +67,10 @@ Scene* GameClient::createScene()
 void GameClient::update(float delta)
 {
 	AIcontrol();
+	Display();
 	now = time(&now);
-	if (now - newtank > 5) {
-		addTank(idcount, WINDOWWIDTH / 2, 50, 1, 1);
+	if (now - newtank > 5&&roundcount-m_tank->killcount> 1&&m_tankList.size()<5) {
+		addTank(idcount, 480, 50, 1, 1);
 		idcount++;
 		newtank = now;
 	}
@@ -110,6 +127,7 @@ void GameClient::update(float delta)
 					if (bullet->getRect().intersectsRect(tank_another->getRect())) {
 						m_deleteUbulletList.pushBack(bullet);
 						m_deleteTankList.pushBack(tank_another);
+						playtank->killcount++;
 					}
 				}
 				for (int l = 0; l < tank_another->getBulletList().size(); l++) {
@@ -119,6 +137,17 @@ void GameClient::update(float delta)
 						m_deleteBulletList.pushBack(abullet);
 					}
 				}
+			}
+		}
+
+		for (int j = 0; j < playtank->getUbulletList().size(); j++) {
+			auto bullet = playtank->getUbulletList().at(j);
+			if (bullet->getPositionX() > 955) {
+				m_deleteUbulletList.pushBack(bullet);
+			}
+			if (bullet->getRect().intersectsRect(m_core->getRect())&&m_core->getLife()>0) {
+				m_deleteUbulletList.pushBack(bullet);
+				m_core->Blast();
 			}
 		}
 
@@ -146,6 +175,20 @@ void GameClient::update(float delta)
 	// 坦克与 坦克，物品的碰撞检测
 	for (int i = 0;i < m_tankList.size(); i++)
 	{
+		auto c_tank = m_tankList.at(i);
+		for (int j = 0; j < c_tank->getBulletList().size(); j++) {
+			auto cbullet = c_tank->getBulletList().at(j);
+			if (cbullet->getRect().intersectsRect(m_core->getRect())&&m_core->getLife()>0) {
+				GameOver();
+				m_core->Blast();
+			}
+		}
+		for (int j = 0; j < c_tank->getBulletList().size(); j++) {
+			auto cbullet = c_tank->getBulletList().at(j);
+			if (cbullet->getPositionX() > 955) {
+				m_deleteBulletList.pushBack(cbullet);
+			}
+		}
 		for (int j = 0; j < m_bgList.size(); j++)
 		{
 			auto nowTank = m_tankList.at(i);
@@ -177,7 +220,7 @@ void GameClient::update(float delta)
 				// 方法2：履带停止转动
 				// nowTank->Stay(TANK_LEFT);
 			}
-			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT))
+			if (nowTank->getLife() && (nowTank->getRect().intersectsRect(nowBrick->getRect())) && (nowTank->getDirection() == TANK_RIGHT) || nowTank->getPositionX() > 910)
 			{
 				// 方法1：履带持续转动
 				nowTank->setHindered(TANK_RIGHT); 
@@ -381,16 +424,21 @@ void GameClient::update(float delta)
 	}
 }
 
-// 绘制4个回字砖块
+// 绘制几个回字砖块
 void GameClient::createBackGround()
 {
 	auto map = TMXTiledMap::create("Chapter12/tank/map.tmx");
 	this->addChild(map, 10);
-
+	drawCore(Vec2(16 * 16, 25 * 16));
 	drawBigBG(Vec2(16 * 16, 25 * 16));
 	drawWbigBG(Vec2(44 * 16, 25 * 16));
 	drawBigBG(Vec2(16 * 16, 14 * 16));
 	drawWbigBG(Vec2(44 * 16, 14 * 16));
+}
+
+void GameClient::drawCore(Vec2 position) {
+	m_core = Core::create(position, 0, 0);
+	this->addChild(m_core, 2);
 }
 
 // 绘制单个回字砖块
@@ -554,7 +602,7 @@ void GameClient::AIcontrol() {
 					break;
 			}
 		}
-		if (tank->now - tank->boost > 5) {
+		if (tank->now - tank->boost > 3) {
 			if (tank->direc < 4) {
 				tank->direc += 4;
 			}
@@ -599,9 +647,43 @@ void GameClient::greboot() {
 }
 
 void GameClient::gpause() {
+	auto pauselable = Label::createWithSystemFont("      GAME PAUSED\nPRESS O TO RESUME", "System", 25);
+	m_pause = pauselable;
+	m_pause->setVisible(true);
+	m_pause->setPositionX(WINDOWWIDTH / 2);
+	m_pause->setPositionY(WINDOWHEIGHT / 2);
+	m_pause->enableShadow(Color4B(255, 0, 0, 255),Size(2,2));
+	m_pause->setTextColor(Color4B(255,255,255,255));
+	this->addChild(m_pause, 10);
 	CCDirector::sharedDirector()->pause();
 }
 
 void GameClient::gresume() {
+	if(m_pause!=NULL)
+	m_pause->setVisible(false);
 	CCDirector::sharedDirector()->resume();
+}
+
+void GameClient::GameOver() {
+
+}
+
+void GameClient::Display() {
+	std::string s1 = "TOTAL KILL: ";
+	std::string s2 = std::to_string(m_tank->killcount);
+	std::string s3 = s1 + s2;
+	m_killcount->setString(s3);
+	now = time(&now);
+	if (20 - (now - m_tank->boost) > 0) {
+		s1 = "BOOST IN:";
+		s2 = std::to_string(20 - (now - m_tank->boost));
+		s3 = s1 + s2;
+	}
+	else {
+		s3 = "BOOST READY";
+	}
+	m_boostct->setString(s3);
+
+
+
 }

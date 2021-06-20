@@ -151,8 +151,8 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClCompile Include="..\Classes\Chapter12\BaseObject.cpp" />
     <ClCompile Include="..\Classes\Chapter12\Brick.cpp" />
     <ClCompile Include="..\Classes\Chapter12\Bullet.cpp" />
+    <ClCompile Include="..\Classes\Chapter12\core.cpp" />
     <ClCompile Include="..\Classes\Chapter12\GameClient.cpp" />
-    <ClCompile Include="..\Classes\Chapter12\ODSocket\stdafx.cpp" />
     <ClCompile Include="..\Classes\Chapter12\Tank.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -161,11 +161,9 @@ xcopy "$(ProjectDir)..\Resources" "$(OutDir)" /D /E /I /F /Y
     <ClInclude Include="..\Classes\Chapter12\BaseObject.h" />
     <ClInclude Include="..\Classes\Chapter12\Brick.h" />
     <ClInclude Include="..\Classes\Chapter12\Bullet.h" />
+    <ClInclude Include="..\Classes\Chapter12\core.h" />
     <ClInclude Include="..\Classes\Chapter12\GameClient.h" />
     <ClInclude Include="..\Classes\Chapter12\Global.h" />
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\stdafx.h" />
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\targetver.h" />
-    <ClInclude Include="..\Classes\Chapter12\ODSocket\tchar.h" />
     <ClInclude Include="..\Classes\Chapter12\Tank.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
